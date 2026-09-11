@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>打开物流数据知识库</title>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      background: #f6f8fb;
+      color: #1f2937;
+      font-family: "Microsoft YaHei", "PingFang SC", system-ui, sans-serif;
+    }
+
+    main {
+      width: min(680px, calc(100vw - 32px));
+      padding: 28px;
+      border: 1px solid #d8dee8;
+      border-radius: 8px;
+      background: #ffffff;
+      box-shadow: 0 12px 28px rgba(15, 23, 42, .08);
+    }
+
+    h1 {
+      margin: 0 0 12px;
+      font-size: 28px;
+      line-height: 1.25;
+    }
+
+    p {
+      line-height: 1.7;
+      color: #64748b;
+    }
+
+    a {
+      display: inline-flex;
+      margin-top: 12px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      background: #2563eb;
+      color: #ffffff;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>物流数据知识库</h1>
+    <p>如果没有自动打开，请点击下面的按钮进入知识库。</p>
+    <a href="./web/logistics-knowledge.html">打开知识库</a>
+  </main>
+  <script>
+    window.location.replace("./web/logistics-knowledge.html");
+  </script>
+</body>
+</html>

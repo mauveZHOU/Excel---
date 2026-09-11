@@ -1,0 +1,2459 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Excel 公式经验库</title>
+  <style>
+    :root {
+      --ink: #202124;
+      --muted: #61646b;
+      --line: #d9dde5;
+      --page: #f7f8fb;
+      --panel: #ffffff;
+      --blue: #2563eb;
+      --green: #16845b;
+      --amber: #b45309;
+      --red: #b42318;
+      --violet: #6d28d9;
+      --shadow: 0 10px 28px rgba(28, 35, 52, .08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--page);
+      color: var(--ink);
+      font-family: "Microsoft YaHei", "PingFang SC", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .app {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 280px minmax(0, 1fr);
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      padding: 24px 18px;
+      background: #111827;
+      color: #f8fafc;
+      overflow-y: auto;
+    }
+
+    .brand {
+      display: grid;
+      gap: 6px;
+      margin-bottom: 24px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid rgba(255, 255, 255, .16);
+    }
+
+    .brand strong {
+      font-size: 22px;
+      line-height: 1.2;
+      letter-spacing: 0;
+    }
+
+    .brand span {
+      color: #cbd5e1;
+      font-size: 13px;
+    }
+
+    .nav {
+      display: grid;
+      gap: 6px;
+    }
+
+    .nav-label {
+      margin: 14px 0 4px;
+      padding: 0 12px;
+      color: #93c5fd;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .nav a {
+      padding: 10px 12px;
+      border-radius: 8px;
+      color: #dbeafe;
+      font-size: 14px;
+    }
+
+    .nav a:hover,
+    .nav a:focus {
+      outline: none;
+      background: rgba(255, 255, 255, .12);
+      color: #ffffff;
+    }
+
+    .main {
+      min-width: 0;
+      padding: 32px;
+    }
+
+    .hero {
+      display: grid;
+      gap: 16px;
+      margin-bottom: 24px;
+      padding: 28px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .hero h1 {
+      margin: 0;
+      font-size: clamp(30px, 4vw, 48px);
+      line-height: 1.15;
+      letter-spacing: 0;
+    }
+
+    .hero p {
+      max-width: 860px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 17px;
+    }
+
+    .quick-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .btn {
+      border: 1px solid var(--line);
+      background: #ffffff;
+      color: var(--ink);
+      border-radius: 8px;
+      padding: 9px 12px;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .btn:hover,
+    .btn:focus {
+      border-color: var(--blue);
+      outline: none;
+    }
+
+    section {
+      margin: 24px 0;
+      padding: 24px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    h2 {
+      margin: 0 0 14px;
+      font-size: 24px;
+      line-height: 1.25;
+      letter-spacing: 0;
+    }
+
+    h3 {
+      margin: 22px 0 10px;
+      font-size: 18px;
+      line-height: 1.3;
+      letter-spacing: 0;
+    }
+
+    p {
+      margin: 10px 0;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .cols-2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .cols-3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .mini-card {
+      min-height: 120px;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+    }
+
+    .mini-card strong {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 17px;
+    }
+
+    .scenario-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 16px;
+    }
+
+    .scenario-card {
+      display: grid;
+      gap: 10px;
+      min-height: 190px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+    }
+
+    .scenario-card:hover,
+    .scenario-card:focus {
+      outline: none;
+      border-color: var(--blue);
+      box-shadow: 0 8px 22px rgba(37, 99, 235, .12);
+    }
+
+    .scenario-card b {
+      font-size: 18px;
+      line-height: 1.3;
+    }
+
+    .scenario-card p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .scenario-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: auto;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      padding: 3px 8px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #f8fafc;
+      color: #334155;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .formula {
+      overflow-x: auto;
+      margin: 12px 0;
+      padding: 16px;
+      border-radius: 8px;
+      background: #0f172a;
+      color: #e2e8f0;
+      font-family: Consolas, "Cascadia Mono", monospace;
+      font-size: 14px;
+      line-height: 1.6;
+      white-space: pre;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+    }
+
+    th,
+    td {
+      padding: 11px 12px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: #f1f5f9;
+      font-weight: 700;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 10px;
+      align-items: stretch;
+      margin: 16px 0;
+    }
+
+    .flow-step {
+      position: relative;
+      min-height: 112px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-top: 4px solid var(--blue);
+      border-radius: 8px;
+      background: #ffffff;
+    }
+
+    .flow-step:nth-child(2) { border-top-color: var(--green); }
+    .flow-step:nth-child(3) { border-top-color: var(--amber); }
+    .flow-step:nth-child(4) { border-top-color: var(--violet); }
+    .flow-step:nth-child(5) { border-top-color: #0f766e; }
+    .flow-step:nth-child(6) { border-top-color: var(--red); }
+
+    .flow-step b {
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .flow-step code {
+      color: #334155;
+      font-size: 13px;
+    }
+
+    .split-visual {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .time-box {
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: linear-gradient(90deg, #eff6ff 0 50%, #ecfdf5 50% 100%);
+    }
+
+    .time-parts {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      margin-top: 12px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+
+    .time-parts div {
+      padding: 14px;
+      background: #ffffff;
+    }
+
+    .time-parts div + div {
+      border-left: 1px solid var(--line);
+    }
+
+    .timeline {
+      margin: 18px 0;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+    }
+
+    .timeline-bar {
+      position: relative;
+      height: 28px;
+      border-radius: 8px;
+      background: linear-gradient(90deg, #dcfce7 0 45%, #fee2e2 45% 100%);
+      border: 1px solid var(--line);
+    }
+
+    .cutoff {
+      position: absolute;
+      left: 45%;
+      top: -8px;
+      bottom: -8px;
+      width: 3px;
+      background: #111827;
+    }
+
+    .timeline-labels {
+      display: grid;
+      grid-template-columns: 45% 55%;
+      gap: 0;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .week-rule {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(74px, 1fr));
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .day {
+      padding: 12px 8px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ecfdf5;
+      text-align: center;
+    }
+
+    .day.rest {
+      background: #fee2e2;
+    }
+
+    .day b,
+    .day span {
+      display: block;
+    }
+
+    .quiz {
+      display: grid;
+      gap: 10px;
+    }
+
+    .quiz-item {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: center;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+    }
+
+    .answer {
+      display: none;
+      grid-column: 1 / -1;
+      padding: 10px;
+      border-radius: 8px;
+      background: #f8fafc;
+      font-family: Consolas, "Cascadia Mono", monospace;
+      color: #0f172a;
+    }
+
+    .quiz-item.open .answer {
+      display: block;
+    }
+
+    .matrix td.result-day {
+      background: #dcfce7;
+      color: #14532d;
+      font-weight: 700;
+    }
+
+    .matrix td.result-next {
+      background: #fff7ed;
+      color: #7c2d12;
+      font-weight: 700;
+    }
+
+    .builder {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .builder-step {
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+    }
+
+    .builder-step span {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      margin-bottom: 8px;
+      border-radius: 50%;
+      background: #111827;
+      color: #ffffff;
+      font-weight: 700;
+    }
+
+    .function-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 18px 0 12px;
+    }
+
+    .function-tab {
+      border: 1px solid var(--line);
+      background: #ffffff;
+      color: var(--ink);
+      border-radius: 8px;
+      padding: 9px 12px;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .function-tab:hover,
+    .function-tab:focus {
+      outline: none;
+      border-color: var(--blue);
+    }
+
+    .function-tab.active {
+      background: #111827;
+      border-color: #111827;
+      color: #ffffff;
+    }
+
+    .function-detail {
+      display: none;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+    }
+
+    .function-detail.active {
+      display: block;
+    }
+
+    @media (max-width: 1040px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: static;
+        height: auto;
+      }
+
+      .nav {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .flow,
+      .builder {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 720px) {
+      .main {
+        padding: 16px;
+      }
+
+      .hero,
+      section {
+        padding: 18px;
+      }
+
+      .nav,
+      .cols-2,
+      .cols-3,
+      .scenario-list,
+      .split-visual,
+      .flow,
+      .builder,
+      .week-rule {
+        grid-template-columns: 1fr;
+      }
+
+      .quiz-item {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <strong>Excel 公式经验库</strong>
+        <span>从记住小公式，到搭建大公式</span>
+      </div>
+      <nav class="nav" aria-label="页面目录">
+        <a href="#scenarios">场景总览</a>
+        <div class="nav-label">场景页面</div>
+        <a href="#scenario1">场景 1：揽收时间</a>
+        <a href="#scenario2">场景 2：CIFR 编号</a>
+        <a href="#scenario3">场景 3：时效剔除</a>
+        <a href="#scenario4">场景 4：同名聚合</a>
+        <a href="#scenario5">场景 5：二维取数</a>
+        <a href="#scenario6">场景 6：条件拼接</a>
+        <a href="#scenario7">场景 7：动态引用</a>
+        <a href="#scenario8">场景 8：逗号金额</a>
+        <a href="#scenario9">场景 9：动态分析表</a>
+        <div class="nav-label">通用能力</div>
+        <a href="#functions">函数速记</a>
+        <a href="#build">搭建方法</a>
+        <a href="#quiz">主动自测</a>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <header class="hero">
+        <h1>Excel 公式经验库</h1>
+        <p>这里会持续沉淀你工作中的实战大公式。每个场景都会保留原公式、业务逻辑、记忆法、拆解图、可复用搭建方法和主动自测。</p>
+        <div class="quick-actions">
+          <a class="btn" href="#scenarios">进入场景总览</a>
+          <a class="btn" href="#quiz">开始自测</a>
+          <button class="btn" type="button" onclick="window.print()">打印/保存 PDF</button>
+        </div>
+      </header>
+
+      <section id="scenarios">
+        <h2>场景总览</h2>
+        <p class="muted">后续你每发一个实战大公式，我都会按这个结构新增一张场景卡，并在对应场景里补齐记忆法、拆解和搭建方法。</p>
+        <div class="scenario-list">
+          <a class="scenario-card" href="#scenario1">
+            <b>场景 1：根据下单时间推算揽收时间</b>
+            <p>判断订单应该当天揽收，还是顺延到下一个法国工作日。重点函数：`LET`、`VALUE`、`INT`、`MOD`、`WORKDAY.INTL`。</p>
+            <div class="scenario-meta">
+              <span class="tag">日期时间拆分</span>
+              <span class="tag">工作日判断</span>
+              <span class="tag">截单时间</span>
+            </div>
+          </a>
+          <a class="scenario-card" href="#scenario2">
+            <b>场景 2：自动生成 CIFR 业务编号</b>
+            <p>把城市缩写、日期、运输商代码和同组序号拼成编号。重点解释为什么同供应商同日同地址第 2 次会显示 `02`。</p>
+            <div class="scenario-meta">
+              <span class="tag">编号拼接</span>
+              <span class="tag">COUNTIFS</span>
+              <span class="tag">补零显示</span>
+            </div>
+          </a>
+          <a class="scenario-card" href="#scenario3">
+            <b>场景 3：计算下单到揽收时效</b>
+            <p>计算下单到揽收之间的小时数，并剔除周末和法国节假日。重点函数：`NETWORKDAYS.INTL`。</p>
+            <div class="scenario-meta">
+              <span class="tag">工作日计数</span>
+              <span class="tag">非工作日扣除</span>
+              <span class="tag">小时差</span>
+            </div>
+          </a>
+          <a class="scenario-card" href="#scenario4">
+            <b>场景 4：同名客户订单聚合</b>
+            <p>先生成客户名称清单和下单城市清单，再同时按周次、客户、地址筛选 BI 数据源并聚合订单数。</p>
+            <div class="scenario-meta">
+              <span class="tag">FILTER + UNIQUE</span>
+              <span class="tag">MATCH</span>
+              <span class="tag">SUMPRODUCT</span>
+            </div>
+          </a>
+          <a class="scenario-card" href="#scenario5">
+            <b>场景 5：改变表格呈现方式</b>
+            <p>把原表横向日期块里的数据，按目标表的日期、客户、指标重新取出。重点函数：`INDEX + MATCH + MATCH`。</p>
+            <div class="scenario-meta">
+              <span class="tag">二维定位</span>
+              <span class="tag">INDEX + MATCH</span>
+              <span class="tag">动态标题范围</span>
+            </div>
+          </a>
+          <a class="scenario-card" href="#scenario6">
+            <b>场景 6：渠道时效梯队分析</b>
+            <p>用 `COUNTIFS` 按客户和时效区间计数，重点理解条件写法 `"="&C$3`。</p>
+            <div class="scenario-meta">
+              <span class="tag">COUNTIFS</span>
+              <span class="tag">条件拼接</span>
+              <span class="tag">锁定引用</span>
+            </div>
+          </a>
+          <a class="scenario-card" href="#scenario7">
+            <b>场景 7：动态引用工作表</b>
+            <p>用 `SUBSTITUTE` 安全处理工作表名，再用 `INDIRECT` 动态引用 X/Y 列，筛选去重后计数。</p>
+            <div class="scenario-meta">
+              <span class="tag">INDIRECT</span>
+              <span class="tag">SUBSTITUTE</span>
+              <span class="tag">动态表名</span>
+            </div>
+          </a>
+          <a class="scenario-card" href="#scenario8">
+            <b>场景 8：汇总逗号小数金额</b>
+            <p>动态引用指定工作表，筛选 X 列条件，并把 N 列逗号小数文本转成数字后求和。</p>
+            <div class="scenario-meta">
+              <span class="tag">SUBSTITUTE</span>
+              <span class="tag">VALUE</span>
+              <span class="tag">FILTER + SUM</span>
+            </div>
+          </a>
+          <a class="scenario-card" href="#scenario9">
+            <b>场景 9：自动生成客户城市分析表</b>
+            <p>先用 QUERY 汇总“城市＋BI客户＋票数”，再用 MAP 逐行查找映射客户，自动暴露未匹配和多客户城市。</p>
+            <div class="scenario-meta">
+              <span class="tag">组合键</span>
+              <span class="tag">LET + MATCH</span>
+              <span class="tag">SUMPRODUCT</span>
+            </div>
+          </a>
+        </div>
+      </section>
+
+      <section id="scenario1">
+        <h2>场景 1：根据下单时间推算揽收时间</h2>
+        <h3>业务目标</h3>
+        <p class="muted">根据订单的下单时间，判断这个订单应该算当天揽收，还是顺延到下一个法国工作日揽收。</p>
+        <table>
+          <thead>
+            <tr>
+              <th>判断点</th>
+              <th>结果</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>下单时间为空</td><td>返回空</td></tr>
+            <tr><td>不晚于客户截单时间，且当天是工作日</td><td>当天揽收</td></tr>
+            <tr><td>不晚于客户截单时间，但当天是周末或法国节假日</td><td>下一个工作日揽收</td></tr>
+            <tr><td>晚于客户截单时间</td><td>下一个工作日揽收</td></tr>
+            <tr><td>客户没有单独设置截单时间</td><td>默认 11:00 截单</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section id="logic">
+        <h2>原公式</h2>
+        <div class="formula">=IF(AH7="","",
+LET(
+ t,VALUE(AH7),
+ d,INT(t),
+ h,'法国节假日'!$A$2:$A,
+ cutoff,IFNA(
+  XLOOKUP(TRIM(D7),'揽收客户截单时间设置'!$A:$A,'揽收客户截单时间设置'!$B:$B),
+  TIME(11,0,0)
+ ),
+ IF(
+  MOD(t,1)&lt;=cutoff,
+  IF(OR(WEEKDAY(d,2)&gt;5,COUNTIF(h,d)&gt;0),WORKDAY.INTL(d,1,"0000011",h),d),
+  WORKDAY.INTL(d,1,"0000011",h)
+ )
+))</div>
+
+        <h3>一句话记忆</h3>
+        <p><strong>空值先挡住，时间拆两半；客户找截单，晚了往后算；当天若放假，也要往后转。</strong></p>
+      </section>
+
+      <section id="visual">
+        <h2>视觉记忆区</h2>
+        <p class="muted">先形成画面，再回忆公式。这个顺序更省力。</p>
+
+        <h3>公式积木图</h3>
+        <div class="flow" aria-label="公式积木图">
+          <div class="flow-step"><b>1. 挡空值</b><code>IF(AH7="","",...)</code><p>没有下单时间就不计算。</p></div>
+          <div class="flow-step"><b>2. 起名字</b><code>LET(...)</code><p>把中间结果贴上标签。</p></div>
+          <div class="flow-step"><b>3. 转真时间</b><code>VALUE(AH7)</code><p>把文本时间变成可计算时间。</p></div>
+          <div class="flow-step"><b>4. 拆两半</b><code>INT(t) + MOD(t,1)</code><p>日期和几点几分分开判断。</p></div>
+          <div class="flow-step"><b>5. 查规则</b><code>XLOOKUP + IFNA</code><p>找客户截单时间，找不到用默认值。</p></div>
+          <div class="flow-step"><b>6. 找工作日</b><code>WORKDAY.INTL</code><p>跳过周末和节假日。</p></div>
+          <div class="flow-step"><b>7. 错误兜底</b><code>IFNA / IFERROR</code><p>出错时返回备用答案。</p></div>
+        </div>
+
+        <h3>时间拆分图</h3>
+        <div class="split-visual">
+          <div class="time-box">
+            <strong>完整下单时间 t</strong>
+            <div class="time-parts">
+              <div><span class="tag">日期部分</span><p>2026-06-25</p><strong>INT(t)</strong></div>
+              <div><span class="tag">时间部分</span><p>15:30</p><strong>MOD(t,1)</strong></div>
+            </div>
+          </div>
+          <div class="mini-card">
+            <strong>记忆重点</strong>
+            <p>`INT` 管“是哪一天”。</p>
+            <p>`MOD` 管“当天几点钟”。</p>
+            <p><strong>INT 管日期，MOD 管钟表。</strong></p>
+          </div>
+        </div>
+
+        <h3>截单时间轴</h3>
+        <div class="timeline">
+          <div class="timeline-bar">
+            <span class="cutoff" aria-label="截单时间"></span>
+          </div>
+          <div class="timeline-labels">
+            <span>00:00 到 11:00：赶上截单，继续判断当天能不能揽收</span>
+            <span>11:00 后：晚于截单，直接顺延</span>
+          </div>
+        </div>
+
+        <h3>判断矩阵</h3>
+        <table class="matrix">
+          <thead>
+            <tr>
+              <th>是否赶上截单</th>
+              <th>当天是否周末/节假日</th>
+              <th>输出</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>是</td><td>否</td><td class="result-day">当天 d</td></tr>
+            <tr><td>是</td><td>是</td><td class="result-next">下一个工作日</td></tr>
+            <tr><td>否</td><td>否</td><td class="result-next">下一个工作日</td></tr>
+            <tr><td>否</td><td>是</td><td class="result-next">下一个工作日</td></tr>
+          </tbody>
+        </table>
+
+        <h3>WORKDAY.INTL 周末规则</h3>
+        <div class="week-rule">
+          <div class="day"><b>周一</b><span>0 工作</span></div>
+          <div class="day"><b>周二</b><span>0 工作</span></div>
+          <div class="day"><b>周三</b><span>0 工作</span></div>
+          <div class="day"><b>周四</b><span>0 工作</span></div>
+          <div class="day"><b>周五</b><span>0 工作</span></div>
+          <div class="day rest"><b>周六</b><span>1 休息</span></div>
+          <div class="day rest"><b>周日</b><span>1 休息</span></div>
+        </div>
+        <p><strong>"0000011"</strong>：从周一排到周日，0 是工作，1 是休息。</p>
+
+        <h3>错误兜底对比</h3>
+        <div class="grid cols-2">
+          <div class="mini-card">
+            <strong>IFNA：查不到专用</strong>
+            <p>只接住 <code>#N/A</code>。最适合放在查找公式外面，比如客户名称没有出现在规则表里。</p>
+            <div class="formula">=IFNA(XLOOKUP(...),TIME(11,0,0))</div>
+            <span class="tag">查不到，用 IFNA</span>
+          </div>
+          <div class="mini-card">
+            <strong>IFERROR：大安全网</strong>
+            <p>接住多种错误，比如 <code>#N/A</code>、<code>#VALUE!</code>、<code>#DIV/0!</code>、<code>#REF!</code>。</p>
+            <div class="formula">=IFERROR(可能出错的公式,备用值)</div>
+            <span class="tag">全报错，用 IFERROR</span>
+          </div>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>真实问题</th>
+              <th>推荐函数</th>
+              <th>原因</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>只是查找不到客户、SKU、渠道规则</td><td><strong>IFNA</strong></td><td>精准处理 <code>#N/A</code>，不会藏住其他错误。</td></tr>
+            <tr><td>不确定会出现哪种错误，但都想统一兜底</td><td><strong>IFERROR</strong></td><td>范围更大，适合最终展示结果。</td></tr>
+            <tr><td>正在排查公式为什么错</td><td><strong>先不用 IFERROR</strong></td><td>否则真正的问题可能被备用值盖住。</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section id="scenario2">
+        <h2>场景 2：自动生成 CIFR 业务编号</h2>
+        <p class="muted">这个公式的核心是把固定前缀、城市缩写、日期、运输商代码和同组序号拼成一个完整编号。</p>
+
+        <h3>原公式</h3>
+        <div class="formula">=IF(D2="","","CIFR" &amp; IFERROR(INDEX('城市缩写（数据源）'!A:A, MATCH(TRIM(I2),'城市缩写（数据源）'!B:B,0)),"") &amp; IFERROR(TEXT(G2,"ddmmyyyy"),"") &amp; IFERROR(VLOOKUP(TRIM(D2),'运输商信息（数据源）'!A:B,2,0),"")&amp; TEXT(COUNTIFS(D$2:$D2,D2,G$2:$G2,G2,I$2:$I2,I2),"00"))</div>
+
+        <h3>编号组成</h3>
+        <div class="flow" aria-label="CIFR 编号组成">
+          <div class="flow-step"><b>固定前缀</b><code>"CIFR"</code><p>说明这是 CIFR 类型编号。</p></div>
+          <div class="flow-step"><b>城市缩写</b><code>INDEX + MATCH</code><p>根据地址/城市查缩写。</p></div>
+          <div class="flow-step"><b>日期文本</b><code>TEXT(G2,"ddmmyyyy")</code><p>把日期变成 8 位编号片段。</p></div>
+          <div class="flow-step"><b>运输商代码</b><code>VLOOKUP</code><p>根据供应商查代码。</p></div>
+          <div class="flow-step"><b>同组序号</b><code>COUNTIFS + TEXT</code><p>第 1 次是 01，第 2 次是 02。</p></div>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>编号片段</th>
+              <th>公式</th>
+              <th>作用</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>固定前缀</td><td><code>"CIFR"</code></td><td>编号开头固定内容。</td></tr>
+            <tr><td>城市缩写</td><td><code>INDEX(...) + MATCH(...)</code></td><td>用地址/城市去数据源表查缩写。</td></tr>
+            <tr><td>日期</td><td><code>TEXT(G2,"ddmmyyyy")</code></td><td>把日期变成日月年格式。</td></tr>
+            <tr><td>运输商代码</td><td><code>VLOOKUP(TRIM(D2),...)</code></td><td>根据供应商查运输商代码。</td></tr>
+            <tr><td>序号</td><td><code>TEXT(COUNTIFS(...),"00")</code></td><td>同供应商、同日期、同地址累计第几次。</td></tr>
+          </tbody>
+        </table>
+
+        <h3>为什么第 2 次会显示 02</h3>
+        <p>关键片段是：</p>
+        <div class="formula">TEXT(COUNTIFS(D$2:$D2,D2,G$2:$G2,G2,I$2:$I2,I2),"00")</div>
+
+        <div class="grid cols-2">
+          <div class="mini-card">
+            <strong>COUNTIFS 负责数次数</strong>
+            <p>从第 2 行数到当前行，只统计同时满足这 3 个条件的记录：供应商相同、日期相同、地址相同。</p>
+            <span class="tag">多条件计数</span>
+          </div>
+          <div class="mini-card">
+            <strong>TEXT 负责显示成两位</strong>
+            <p><code>TEXT(1,"00")</code> 显示为 <code>01</code>，<code>TEXT(2,"00")</code> 显示为 <code>02</code>。</p>
+            <span class="tag">补零显示</span>
+          </div>
+        </div>
+
+        <h3>累计范围怎么长大</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>当前行</th>
+              <th>供应商范围</th>
+              <th>日期范围</th>
+              <th>地址范围</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>第 2 行</td><td><code>D$2:$D2</code></td><td><code>G$2:$G2</code></td><td><code>I$2:$I2</code></td></tr>
+            <tr><td>第 3 行</td><td><code>D$2:$D3</code></td><td><code>G$2:$G3</code></td><td><code>I$2:$I3</code></td></tr>
+            <tr><td>第 4 行</td><td><code>D$2:$D4</code></td><td><code>G$2:$G4</code></td><td><code>I$2:$I4</code></td></tr>
+          </tbody>
+        </table>
+
+        <p><strong>记忆重点：</strong><code>D$2</code> 锁住起点，后面的 <code>$D2</code> 会随着行数往下变。所以它不是数整列，而是“从开头数到当前行”。</p>
+
+        <h3>同供应商、同日期、同地址去了 2 次</h3>
+        <table class="matrix">
+          <thead>
+            <tr>
+              <th>行</th>
+              <th>供应商 D</th>
+              <th>日期 G</th>
+              <th>地址 I</th>
+              <th>COUNTIFS</th>
+              <th>TEXT 后</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>2</td><td>DHL</td><td>2026-06-25</td><td>Paris</td><td>1</td><td class="result-day">01</td></tr>
+            <tr><td>3</td><td>DHL</td><td>2026-06-25</td><td>Paris</td><td>2</td><td class="result-next">02</td></tr>
+            <tr><td>4</td><td>DHL</td><td>2026-06-25</td><td>Lyon</td><td>1</td><td class="result-day">01</td></tr>
+            <tr><td>5</td><td>UPS</td><td>2026-06-25</td><td>Paris</td><td>1</td><td class="result-day">01</td></tr>
+            <tr><td>6</td><td>DHL</td><td>2026-06-25</td><td>Paris</td><td>3</td><td class="result-next">03</td></tr>
+          </tbody>
+        </table>
+
+        <h3>这组新函数怎么记</h3>
+        <div class="grid cols-3">
+          <div class="mini-card"><strong>COUNTIFS</strong><p>多条件计数。供应商、日期、地址三张票都对上，才计数一次。</p><span class="tag">检票员</span></div>
+          <div class="mini-card"><strong>TEXT</strong><p>把日期或数字变成指定显示格式，比如 <code>ddmmyyyy</code> 或 <code>00</code>。</p><span class="tag">格式化</span></div>
+          <div class="mini-card"><strong>&amp;</strong><p>文本胶水，把多个编号片段粘成一个完整编号。</p><span class="tag">拼接</span></div>
+          <div class="mini-card"><strong>INDEX + MATCH</strong><p><code>MATCH</code> 找位置，<code>INDEX</code> 按位置取结果。</p><span class="tag">先找后取</span></div>
+          <div class="mini-card"><strong>VLOOKUP</strong><p>从左往右查表，根据供应商名称返回运输商代码。</p><span class="tag">查代码</span></div>
+          <div class="mini-card"><strong>IFERROR</strong><p>某个片段查不到或转换失败时返回空白，避免整条编号报错。</p><span class="tag">兜底</span></div>
+        </div>
+      </section>
+
+      <section id="scenario3">
+        <h2>场景 3：计算下单到揽收时效</h2>
+        <p class="muted">计算下单时间到揽收时间之间的时效小时数，同时剔除周末和法国节假日的影响。</p>
+
+        <h3>原公式</h3>
+        <div class="formula">=IF(OR(AH7="",AM7=""),"",
+LET(
+  h,'法国节假日'!$A$2:$A,
+  oDate,INT(AH7),
+  pDate,INT(AM7),
+  Orderin,IF(OR(WEEKDAY(oDate,2)&gt;5,COUNTIF(h,oDate)&gt;0),WORKDAY.INTL(oDate,1,"0000011",h),AH7),
+  Pickup,IF(OR(WEEKDAY(pDate,2)&gt;5,COUNTIF(h,pDate)&gt;0),WORKDAY.INTL(pDate,1,"0000011",h),AM7),
+  raw,(Pickup-Orderin)*24,
+  nonwork,(INT(Pickup)-INT(Orderin)+1)-NETWORKDAYS.INTL(INT(Orderin),INT(Pickup),"0000011",h),
+  MAX(0,raw-nonwork*24)
+))</div>
+
+        <h3>核心公式画面</h3>
+        <div class="flow" aria-label="下单到揽收时效计算流程">
+          <div class="flow-step"><b>1. 空值保护</b><code>IF(OR(AH7="",AM7=""),"",...)</code><p>下单或揽收为空就不计算。</p></div>
+          <div class="flow-step"><b>2. 准备日期</b><code>INT(AH7) / INT(AM7)</code><p>只拿下单日和揽收日。</p></div>
+          <div class="flow-step"><b>3. 修正边界</b><code>WORKDAY.INTL</code><p>如果起点/终点落在休息日，顺延到工作日。</p></div>
+          <div class="flow-step"><b>4. 自然小时</b><code>(Pickup-Orderin)*24</code><p>先算完整小时差。</p></div>
+          <div class="flow-step"><b>5. 非工作日</b><code>自然日 - NETWORKDAYS.INTL</code><p>算出要扣掉几天。</p></div>
+          <div class="flow-step"><b>6. 扣除小时</b><code>MAX(0,raw-nonwork*24)</code><p>扣掉非工作日小时，并防止负数。</p></div>
+        </div>
+
+        <h3>自然日 - 工作日 = 非工作日</h3>
+        <div class="grid cols-3">
+          <div class="mini-card">
+            <strong>自然日</strong>
+            <p>起止日期之间一共有多少天，周末和节假日也算。</p>
+            <code>INT(Pickup)-INT(Orderin)+1</code>
+          </div>
+          <div class="mini-card">
+            <strong>工作日</strong>
+            <p>用 `NETWORKDAYS.INTL` 只数真正工作的日期。</p>
+            <code>NETWORKDAYS.INTL(...)</code>
+          </div>
+          <div class="mini-card">
+            <strong>非工作日</strong>
+            <p>从整段日历里扣掉工作日，剩下就是周末和节假日。</p>
+            <code>自然日 - 工作日</code>
+          </div>
+        </div>
+
+        <h3>NETWORKDAYS.INTL 速记</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>参数</th>
+              <th>你的公式里</th>
+              <th>意义</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>开始日期</td><td><code>INT(Orderin)</code></td><td>修正后的下单日期。</td></tr>
+            <tr><td>结束日期</td><td><code>INT(Pickup)</code></td><td>修正后的揽收日期。</td></tr>
+            <tr><td>周末规则</td><td><code>"0000011"</code></td><td>周六、周日休息。</td></tr>
+            <tr><td>节假日</td><td><code>h</code></td><td>法国节假日列表。</td></tr>
+          </tbody>
+        </table>
+
+        <h3>WORKDAY.INTL 和 NETWORKDAYS.INTL 的区别</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>函数</th>
+              <th>用途</th>
+              <th>记忆</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><code>WORKDAY.INTL</code></td><td>从某天出发，找下一个工作日。</td><td>找日子</td></tr>
+            <tr><td><code>NETWORKDAYS.INTL</code></td><td>数两个日期之间有几个工作日。</td><td>数日子</td></tr>
+          </tbody>
+        </table>
+
+        <h3>周五到下周一示例</h3>
+        <table class="matrix">
+          <thead>
+            <tr>
+              <th>日期</th>
+              <th>类型</th>
+              <th>是否计入工作日</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>周五</td><td>工作日</td><td class="result-day">计入</td></tr>
+            <tr><td>周六</td><td>周末</td><td class="result-next">扣除</td></tr>
+            <tr><td>周日</td><td>周末</td><td class="result-next">扣除</td></tr>
+            <tr><td>周一</td><td>工作日</td><td class="result-day">计入</td></tr>
+          </tbody>
+        </table>
+        <p><strong>自然日 4 天 - 工作日 2 天 = 非工作日 2 天；要扣掉的小时 = 2 * 24 = 48 小时。</strong></p>
+
+        <h3>可复用搭建方法</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>需求</th>
+              <th>公式</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>起止时间为空则不计算</td><td><code>IF(OR(开始="",结束=""),"",...)</code></td></tr>
+            <tr><td>提取日期</td><td><code>INT(时间)</code></td></tr>
+            <tr><td>判断周末/节假日</td><td><code>OR(WEEKDAY(日期,2)&gt;5,COUNTIF(节假日,日期)&gt;0)</code></td></tr>
+            <tr><td>非工作日起点顺延</td><td><code>WORKDAY.INTL(日期,1,"0000011",节假日)</code></td></tr>
+            <tr><td>计算自然小时差</td><td><code>(结束-开始)*24</code></td></tr>
+            <tr><td>数工作日</td><td><code>NETWORKDAYS.INTL(开始日期,结束日期,"0000011",节假日)</code></td></tr>
+            <tr><td>数非工作日</td><td><code>自然日数量 - 工作日数量</code></td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section id="scenario4">
+        <h2>场景 4：同名客户订单聚合</h2>
+        <p class="muted">同时用客户名称和下单城市做筛选条件，让同一个展示名称下的订单数可以被正确聚合。</p>
+
+        <h3>原公式</h3>
+        <div class="formula">=LET(
+  k,TRIM($C3),
+
+  tC,ARRAYFORMULA(TRIM('客户名称-客户下单城市 (定期更新）'!$C$3:$C$197)),
+  tD,ARRAYFORMULA(TRIM('客户名称-客户下单城市 (定期更新）'!$D$3:$D$197)),
+  tE,ARRAYFORMULA(TRIM('客户名称-客户下单城市 (定期更新）'!$E$3:$E$197)),
+
+  clientKeys,UNIQUE(FILTER(tD,tC=k,tD&lt;&gt;"")),
+  addrList,UNIQUE(FILTER(tE,tC=k,tE&lt;&gt;"")),
+
+  dataWeek,ARRAYFORMULA(TRIM('BI数据源处理'!$A$3:$A$50000)),
+  dataClient,ARRAYFORMULA(TRIM('BI数据源处理'!$F$3:$F$50000)),
+  dataAddr,ARRAYFORMULA(TRIM('BI数据源处理'!$D$3:$D$50000)),
+
+  weekOk,ARRAYFORMULA(dataWeek=TRIM($A$2)),
+  clientOk,ARRAYFORMULA(ISNUMBER(MATCH(dataClient,clientKeys,0))),
+  addrOk,ARRAYFORMULA(ISNUMBER(MATCH(dataAddr,addrList,0))),
+
+  IF(
+    k="",
+    "",
+    SUMPRODUCT(
+      N(weekOk),
+      N(clientOk),
+      N(addrOk)
+    )
+  )
+)</div>
+
+        <h3>核心流程</h3>
+        <div class="flow" aria-label="同名客户聚合流程">
+          <div class="flow-step"><b>1. 当前客户</b><code>k = TRIM($C3)</code><p>拿到当前要统计的客户名。</p></div>
+          <div class="flow-step"><b>2. 映射表清洗</b><code>ARRAYFORMULA(TRIM(...))</code><p>客户、真实名称、城市全部去空格。</p></div>
+          <div class="flow-step"><b>3. 生成客户清单</b><code>UNIQUE(FILTER(tD,...))</code><p>找出这个客户对应的所有真实客户名。</p></div>
+          <div class="flow-step"><b>4. 生成地址清单</b><code>UNIQUE(FILTER(tE,...))</code><p>找出这个客户对应的所有下单城市/地址。</p></div>
+          <div class="flow-step"><b>5. 三个条件判断</b><code>weekOk / clientOk / addrOk</code><p>周次、客户、地址逐行判断。</p></div>
+          <div class="flow-step"><b>6. 聚合计数</b><code>SUMPRODUCT</code><p>三关都通过才计 1。</p></div>
+        </div>
+
+        <h3>先生成两个清单</h3>
+        <div class="grid cols-2">
+          <div class="mini-card">
+            <strong>clientKeys：客户名称清单</strong>
+            <p>从映射表中筛出当前客户 k 对应的所有真实客户名，并去重。</p>
+            <div class="formula">UNIQUE(FILTER(tD,tC=k,tD&lt;&gt;""))</div>
+          </div>
+          <div class="mini-card">
+            <strong>addrList：下单城市/地址清单</strong>
+            <p>从映射表中筛出当前客户 k 对应的所有下单城市或地址，并去重。</p>
+            <div class="formula">UNIQUE(FILTER(tE,tC=k,tE&lt;&gt;""))</div>
+          </div>
+        </div>
+
+        <h3>ARRAYFORMULA：让公式一次处理整列</h3>
+        <div class="grid cols-2">
+          <div class="mini-card">
+            <strong>普通公式</strong>
+            <p>只处理一个单元格。</p>
+            <div class="formula">TRIM(C3)</div>
+            <span class="tag">一个工人洗一个杯子</span>
+          </div>
+          <div class="mini-card">
+            <strong>ARRAYFORMULA</strong>
+            <p>把同一个公式批量应用到整列或一整段范围。</p>
+            <div class="formula">ARRAYFORMULA(TRIM(C3:C197))</div>
+            <span class="tag">流水线洗一排杯子</span>
+          </div>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>变量</th>
+              <th>ARRAYFORMULA 的作用</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><code>tC/tD/tE</code></td><td>批量清洗映射表里的客户、真实名称、城市/地址。</td></tr>
+            <tr><td><code>dataWeek/dataClient/dataAddr</code></td><td>批量清洗 BI 数据源里的周次、客户、地址。</td></tr>
+            <tr><td><code>weekOk/clientOk/addrOk</code></td><td>批量生成每一行的 TRUE/FALSE 判断。</td></tr>
+          </tbody>
+        </table>
+
+        <h3>MATCH + ISNUMBER：判断是否在清单里</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>公式</th>
+              <th>作用</th>
+              <th>记忆</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><code>MATCH(dataClient,clientKeys,0)</code></td><td>看 BI 客户名是否在客户清单里。</td><td>查名单，找到给位置号。</td></tr>
+            <tr><td><code>ISNUMBER(MATCH(...))</code></td><td>找到位置号就是 TRUE，找不到就是 FALSE。</td><td>有没有座位号。</td></tr>
+            <tr><td><code>ARRAYFORMULA(...)</code></td><td>对整列数据逐行做判断。</td><td>一整列批量计算。</td></tr>
+          </tbody>
+        </table>
+
+        <h3>SUMPRODUCT：三道闸门都通过才计数</h3>
+        <table class="matrix">
+          <thead>
+            <tr>
+              <th>周次匹配</th>
+              <th>客户匹配</th>
+              <th>地址匹配</th>
+              <th>乘积</th>
+              <th>是否计数</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>1</td><td>1</td><td>1</td><td>1</td><td class="result-day">计数</td></tr>
+            <tr><td>1</td><td>1</td><td>0</td><td>0</td><td class="result-next">不计</td></tr>
+            <tr><td>1</td><td>0</td><td>1</td><td>0</td><td class="result-next">不计</td></tr>
+            <tr><td>0</td><td>1</td><td>1</td><td>0</td><td class="result-next">不计</td></tr>
+          </tbody>
+        </table>
+        <p><strong>记忆：</strong>`SUMPRODUCT` 像三道闸门，周次、客户、地址三个条件都为 1，这一行才会被加进去。</p>
+
+        <h3>为什么能解决同名客户聚合</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>问题</th>
+              <th>公式怎么解决</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>同一个展示客户可能有多个真实客户名称</td><td>用 `clientKeys` 一次性列出全部可匹配名称。</td></tr>
+            <tr><td>同一个客户可能对应多个下单城市/地址</td><td>用 `addrList` 一次性列出全部可匹配地址。</td></tr>
+            <tr><td>数据源里可能有前后空格</td><td>所有关键列先用 `TRIM` 清洗。</td></tr>
+            <tr><td>只想统计指定周次</td><td>用 `weekOk` 判断数据周次是否等于当前周。</td></tr>
+          </tbody>
+        </table>
+
+        <h3>可复用搭建方法</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>需求</th>
+              <th>公式</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>当前关键字去空格</td><td><code>TRIM(单元格)</code></td></tr>
+            <tr><td>整列去空格</td><td><code>ARRAYFORMULA(TRIM(范围))</code></td></tr>
+            <tr><td>根据主键筛出清单</td><td><code>FILTER(返回列,条件列=主键,返回列&lt;&gt;"")</code></td></tr>
+            <tr><td>清单去重</td><td><code>UNIQUE(清单)</code></td></tr>
+            <tr><td>判断值是否在清单里</td><td><code>ISNUMBER(MATCH(值,清单,0))</code></td></tr>
+            <tr><td>多条件同时满足才计数</td><td><code>SUMPRODUCT(N(条件1),N(条件2),N(条件3))</code></td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section id="scenario5">
+        <h2>场景 5：改变表格呈现方式</h2>
+        <p class="muted">把原表中横向按日期分组登记的数据，转换成目标表里“日期 + 客户 + 指标”的明细呈现方式。</p>
+
+        <h3>先别看公式：它其实是在找一个坐标</h3>
+        <p>目标表里的每一个单元格，都可以理解成向原表提一个问题：</p>
+        <div class="formula">在原表里，客户 B2 在日期 A2 下面的指标 D1，是多少？</div>
+        <div class="grid cols-3">
+          <div class="mini-card">
+            <strong>A2：日期</strong>
+            <p>决定去原表第 2 行找哪个横向日期块。</p>
+            <span class="tag">找日期块</span>
+          </div>
+          <div class="mini-card">
+            <strong>B2：客户</strong>
+            <p>决定去原表 B 列找哪一行。</p>
+            <span class="tag">找客户行</span>
+          </div>
+          <div class="mini-card">
+            <strong>D1：指标</strong>
+            <p>决定在当前日期块下面找哪一个指标列。</p>
+            <span class="tag">找指标列</span>
+          </div>
+        </div>
+
+        <h3>用一个小表看懂列号怎么来</h3>
+        <p>假设原表里 `6月16日` 从第 10 列开始，并且每个日期有 5 个指标：</p>
+        <table class="matrix">
+          <thead>
+            <tr>
+              <th>真实列号</th>
+              <th>第 10 列</th>
+              <th>第 11 列</th>
+              <th>第 12 列</th>
+              <th>第 13 列</th>
+              <th>第 14 列</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>第 2 行日期</td><td colspan="5" class="result-day">6月16日这一组日期块</td></tr>
+            <tr><td>第 3 行指标</td><td>揽收数量</td><td>上网当日</td><td>上网非当日</td><td>CMR</td><td>上网率</td></tr>
+            <tr><td>块内位置</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td></tr>
+          </tbody>
+        </table>
+        <p>如果目标表要找 `CMR`，它在日期块内是第 4 个指标，所以真实列号就是：</p>
+        <div class="formula">日期块起始列 10 + 块内位置 4 - 1 = 第 13 列</div>
+        <p><strong>为什么减 1：</strong>因为起始列本身已经是第 1 个指标，不能再多加一次。</p>
+
+        <h3>把长公式翻译成 3 个积木</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>积木</th>
+              <th>公式片段</th>
+              <th>中文</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>找行</td><td><code>MATCH($B2,原表B列,0)</code></td><td>客户在原表第几行。</td></tr>
+            <tr><td>找日期块起点</td><td><code>MATCH($A2,原表第2行,0)</code></td><td>目标日期从第几列开始。</td></tr>
+            <tr><td>找指标偏移</td><td><code>MATCH(D$1,当前日期块的指标标题,0)</code></td><td>目标指标在日期块里第几格。</td></tr>
+          </tbody>
+        </table>
+        <p>最后用：</p>
+        <div class="formula">INDEX(原表数据区域, 客户行号, 日期块起点 + 指标偏移 - 1)</div>
+
+        <h3>原公式</h3>
+        <div class="formula">=IFERROR(INDEX('TT揽收包裹跟踪'!$1:$27,MATCH($B2,'TT揽收包裹跟踪'!$B:$B,0),MATCH(D$1,INDEX('TT揽收包裹跟踪'!$3:$3,1,MATCH($A2,'TT揽收包裹跟踪'!$2:$2,0)):INDEX('TT揽收包裹跟踪'!$3:$3,1,MATCH($A2,'TT揽收包裹跟踪'!$2:$2,0)+4),0)+MATCH($A2,'TT揽收包裹跟踪'!$2:$2,0)-1),"")</div>
+
+        <h3>核心流程</h3>
+        <div class="flow" aria-label="二维定位取数流程">
+          <div class="flow-step"><b>1. 找客户行</b><code>MATCH($B2,原表B列,0)</code><p>用客户名定位原表里的行号。</p></div>
+          <div class="flow-step"><b>2. 找日期块</b><code>MATCH($A2,原表第2行,0)</code><p>用日期定位横向日期分组的起始列。</p></div>
+          <div class="flow-step"><b>3. 圈住指标区</b><code>INDEX(...):INDEX(...+4)</code><p>只圈当前日期下面的 5 个指标标题。</p></div>
+          <div class="flow-step"><b>4. 找块内指标</b><code>MATCH(D$1,指标区,0)</code><p>找目标表当前列标题在日期块里的位置。</p></div>
+          <div class="flow-step"><b>5. 算真实列</b><code>日期起点 + 块内位置 - 1</code><p>把块内位置换成原表真实列号。</p></div>
+          <div class="flow-step"><b>6. 交叉取数</b><code>INDEX(原表,行号,列号)</code><p>行列交叉，取回结果。</p></div>
+        </div>
+
+        <h3>二维定位：行号 + 列号</h3>
+        <div class="grid cols-2">
+          <div class="mini-card">
+            <strong>行号来自客户</strong>
+            <p>目标表 B2 是客户名，用它去原表 B 列找位置。</p>
+            <div class="formula">MATCH($B2,'TT揽收包裹跟踪'!$B:$B,0)</div>
+            <span class="tag">找客户行</span>
+          </div>
+          <div class="mini-card">
+            <strong>列号来自日期 + 指标</strong>
+            <p>先找日期块起点，再找指标在块内的偏移。</p>
+            <div class="formula">日期起始列 + 指标块内位置 - 1</div>
+            <span class="tag">找指标列</span>
+          </div>
+        </div>
+
+        <h3>为什么不能直接在整行找指标</h3>
+        <p>因为原表每个日期下面都会重复出现同一组指标标题。如果直接在第 3 行整行找 `D$1`，可能会找到别的日期下面的同名指标。</p>
+        <table>
+          <thead>
+            <tr>
+              <th>原表结构</th>
+              <th>风险</th>
+              <th>解决方式</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>第 2 行是日期分组</td><td>同一日期占多列</td><td>先用 `MATCH($A2,第2行,0)` 找日期块起点。</td></tr>
+            <tr><td>第 3 行是指标标题</td><td>每个日期下都有同名指标</td><td>只在当前日期的 5 列标题范围里找指标。</td></tr>
+          </tbody>
+        </table>
+
+        <h3>动态圈住当前日期的 5 列</h3>
+        <div class="formula">INDEX('TT揽收包裹跟踪'!$3:$3,1,日期起始列)
+:
+INDEX('TT揽收包裹跟踪'!$3:$3,1,日期起始列+4)</div>
+        <p>这段的作用是生成一个横向小范围，只包含当前日期下面的 5 个指标标题。</p>
+
+        <table class="matrix">
+          <thead>
+            <tr>
+              <th>日期块内位置</th>
+              <th>指标</th>
+              <th>真实列计算</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>1</td><td>揽收数量</td><td class="result-day">日期起始列 + 1 - 1</td></tr>
+            <tr><td>2</td><td>上网数量（当日）</td><td>日期起始列 + 2 - 1</td></tr>
+            <tr><td>3</td><td>上网数量（非当日）</td><td>日期起始列 + 3 - 1</td></tr>
+            <tr><td>4</td><td>CMR</td><td>日期起始列 + 4 - 1</td></tr>
+            <tr><td>5</td><td>上网率</td><td>日期起始列 + 5 - 1</td></tr>
+          </tbody>
+        </table>
+
+        <h3>MATCH 在这个公式里的 3 种角色</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>角色</th>
+              <th>公式</th>
+              <th>作用</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>找行</td><td><code>MATCH($B2,原表B列,0)</code></td><td>找客户在哪一行。</td></tr>
+            <tr><td>找日期块</td><td><code>MATCH($A2,原表第2行,0)</code></td><td>找日期从哪一列开始。</td></tr>
+            <tr><td>找块内指标</td><td><code>MATCH(D$1,日期块标题范围,0)</code></td><td>找指标在当前日期块里的第几格。</td></tr>
+          </tbody>
+        </table>
+
+        <h3>可复用搭建方法</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>需求</th>
+              <th>公式</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>按客户找行号</td><td><code>MATCH(客户名,客户列,0)</code></td></tr>
+            <tr><td>按日期找横向字段起始列</td><td><code>MATCH(日期,日期标题行,0)</code></td></tr>
+            <tr><td>动态生成横向范围</td><td><code>INDEX(标题行,1,起始列):INDEX(标题行,1,结束列)</code></td></tr>
+            <tr><td>在日期块里找指标</td><td><code>MATCH(指标名,日期块标题范围,0)</code></td></tr>
+            <tr><td>行列交叉取数</td><td><code>INDEX(数据区域,行号,列号)</code></td></tr>
+            <tr><td>找不到时留空</td><td><code>IFERROR(公式,"")</code></td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section id="scenario6">
+        <h2>场景 6：渠道时效梯队分析</h2>
+        <p class="muted">用 `COUNTIFS` 同时按客户和时效区间计数，生成每个客户在不同梯队里的数量。</p>
+
+        <h3>原公式</h3>
+        <div class="formula">=COUNTIFS(
+'STEP 4 法法BI签入数据 '!$D:$D,$A4,
+'STEP 4 法法BI签入数据 '!$X:$X,"="&amp;C$3
+)</div>
+
+        <h3>一句话解释</h3>
+        <p>在数据源里数出同时满足这两个条件的记录：客户列 D 等于当前行客户 `$A4`，时效梯队列 X 等于当前列表头 `C$3`。</p>
+
+        <h3>COUNTIFS 条件拆解</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>条件范围</th>
+              <th>条件</th>
+              <th>中文</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><code>'STEP 4 法法BI签入数据 '!$D:$D</code></td><td><code>$A4</code></td><td>数据源客户名 = 当前行客户。</td></tr>
+            <tr><td><code>'STEP 4 法法BI签入数据 '!$X:$X</code></td><td><code>"="&amp;C$3</code></td><td>数据源时效梯队 = 当前列表头。</td></tr>
+          </tbody>
+        </table>
+
+        <h3>重点：`"="&amp;C$3` 是什么意思</h3>
+        <div class="grid cols-3">
+          <div class="mini-card">
+            <strong>"="</strong>
+            <p>比较符号，表示“等于”。</p>
+            <span class="tag">筛选条件</span>
+          </div>
+          <div class="mini-card">
+            <strong>&amp;</strong>
+            <p>文本拼接，把比较符号和单元格内容连起来。</p>
+            <span class="tag">胶水</span>
+          </div>
+          <div class="mini-card">
+            <strong>C$3</strong>
+            <p>当前列的时效梯队表头，比如 `1-5h`、`5-12h`。</p>
+            <span class="tag">动态表头</span>
+          </div>
+        </div>
+        <p>如果 `C$3` 是 `1-5h`，那么 <code>"="&amp;C$3</code> 就表示“等于 1-5h”。</p>
+
+        <h3>比较符号拼接表</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>需求</th>
+              <th>写法</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>等于 C3</td><td><code>"="&amp;C$3</code></td></tr>
+            <tr><td>不等于 C3</td><td><code>"&lt;&gt;"&amp;C$3</code></td></tr>
+            <tr><td>大于 C3</td><td><code>"&gt;"&amp;C$3</code></td></tr>
+            <tr><td>大于等于 C3</td><td><code>"&gt;="&amp;C$3</code></td></tr>
+            <tr><td>小于 C3</td><td><code>"&lt;"&amp;C$3</code></td></tr>
+            <tr><td>小于等于 C3</td><td><code>"&lt;="&amp;C$3</code></td></tr>
+          </tbody>
+        </table>
+
+        <h3>为什么是 `$A4` 和 `C$3`</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>写法</th>
+              <th>锁定什么</th>
+              <th>拖拽时的效果</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><code>$A4</code></td><td>锁定 A 列</td><td>横向复制时一直看客户列，往下复制时变成 `$A5`、`$A6`。</td></tr>
+            <tr><td><code>C$3</code></td><td>锁定第 3 行</td><td>往下复制时一直看表头行，横向复制时变成 `D$3`、`E$3`。</td></tr>
+          </tbody>
+        </table>
+
+        <h3>可复用搭建方法</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>需求</th>
+              <th>公式</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>按客户和区间计数</td><td><code>COUNTIFS(客户列,当前客户,区间列,"="&amp;当前表头)</code></td></tr>
+            <tr><td>横向拖动时固定客户列</td><td><code>$A4</code></td></tr>
+            <tr><td>纵向拖动时固定表头行</td><td><code>C$3</code></td></tr>
+            <tr><td>动态拼接比较条件</td><td><code>比较符号 &amp; 单元格</code></td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section id="scenario7">
+        <h2>场景 7：动态引用工作表并统计唯一值</h2>
+        <p class="muted">根据 C9 里的工作表名称，动态引用对应工作表的 X/Y 列，筛选后统计 Y 列唯一值数量。</p>
+
+        <h3>原公式</h3>
+        <div class="formula">=LET(sh,"'"&amp;SUBSTITUTE($C9,"'","''")&amp;"'",y,INDIRECT(sh&amp;"!$Y:$Y"),x,INDIRECT(sh&amp;"!$X:$X"),IFERROR(ROWS(UNIQUE(FILTER(y,(x=D$5)*(y&lt;&gt;"")))),0))</div>
+
+        <h3>先看懂它在做什么</h3>
+        <div class="flow" aria-label="动态引用流程">
+          <div class="flow-step"><b>1. 读取表名</b><code>$C9</code><p>C9 里放的是要引用的工作表名。</p></div>
+          <div class="flow-step"><b>2. 处理单引号</b><code>SUBSTITUTE</code><p>表名里如果有单引号，先变成安全写法。</p></div>
+          <div class="flow-step"><b>3. 拼成引用文本</b><code>'表名'!$Y:$Y</code><p>把表名和列范围拼成一段地址文字。</p></div>
+          <div class="flow-step"><b>4. 变成真实引用</b><code>INDIRECT</code><p>让这段地址文字真的指向那张表的列。</p></div>
+          <div class="flow-step"><b>5. 筛选去重计数</b><code>FILTER + UNIQUE + ROWS</code><p>筛出符合条件的 Y 值，去重后数数量。</p></div>
+        </div>
+
+        <h3>公式分块</h3>
+        <table>
+          <thead>
+            <tr><th>变量/片段</th><th>公式</th><th>作用</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>sh</code></td><td><code>"'"&amp;SUBSTITUTE($C9,"'","''")&amp;"'"</code></td><td>把 C9 的工作表名处理成可引用的表名文本。</td></tr>
+            <tr><td><code>y</code></td><td><code>INDIRECT(sh&amp;"!$Y:$Y")</code></td><td>动态引用这个工作表的 Y 列。</td></tr>
+            <tr><td><code>x</code></td><td><code>INDIRECT(sh&amp;"!$X:$X")</code></td><td>动态引用这个工作表的 X 列。</td></tr>
+            <tr><td><code>FILTER</code></td><td><code>FILTER(y,(x=D$5)*(y&lt;&gt;""))</code></td><td>筛选 X 等于 D5 且 Y 不为空的 Y 值。</td></tr>
+            <tr><td><code>ROWS + UNIQUE</code></td><td><code>ROWS(UNIQUE(...))</code></td><td>去重后统计数量。</td></tr>
+          </tbody>
+        </table>
+
+        <h3>SUBSTITUTE：先让表名安全</h3>
+        <div class="formula">SUBSTITUTE($C9,"'","''")</div>
+        <p>它的意思是：把工作表名称里的单引号 <code>'</code> 替换成两个单引号 <code>''</code>。</p>
+        <table>
+          <thead>
+            <tr><th>C9 工作表名</th><th>SUBSTITUTE 后</th><th>为什么</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>Sheet1</code></td><td><code>Sheet1</code></td><td>没有单引号，不需要变化。</td></tr>
+            <tr><td><code>L'OREAL</code></td><td><code>L''OREAL</code></td><td>表名内部的单引号要转义。</td></tr>
+          </tbody>
+        </table>
+
+        <h3>INDIRECT：把地址文字变成真实引用</h3>
+        <div class="grid cols-2">
+          <div class="mini-card">
+            <strong>先拼出文字</strong>
+            <p>如果 C9 是 `客户A`，那么：</p>
+            <div class="formula">sh&amp;"!$Y:$Y"</div>
+            <p>会得到 <code>'客户A'!$Y:$Y</code> 这段地址文字。</p>
+          </div>
+          <div class="mini-card">
+            <strong>再变成引用</strong>
+            <p>用 `INDIRECT` 后，表格才会真的去读取客户A工作表的 Y 列。</p>
+            <div class="formula">INDIRECT("'客户A'!$Y:$Y")</div>
+          </div>
+        </div>
+
+        <h3>复合用法：SUBSTITUTE + INDIRECT</h3>
+        <table>
+          <thead>
+            <tr><th>步骤</th><th>做什么</th><th>记忆</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>1</td><td>C9 提供工作表名。</td><td>拿到门牌号。</td></tr>
+            <tr><td>2</td><td>`SUBSTITUTE` 处理表名中的单引号。</td><td>把门牌号写规范。</td></tr>
+            <tr><td>3</td><td>`&` 拼出 `'表名'!$Y:$Y`。</td><td>写成完整地址。</td></tr>
+            <tr><td>4</td><td>`INDIRECT` 把地址文字变成真实引用。</td><td>真的走到这个地址。</td></tr>
+          </tbody>
+        </table>
+
+        <h3>筛选、去重、计数</h3>
+        <div class="formula">ROWS(UNIQUE(FILTER(y,(x=D$5)*(y&lt;&gt;""))))</div>
+        <table>
+          <thead>
+            <tr><th>片段</th><th>作用</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>x=D$5</code></td><td>X 列等于当前条件。</td></tr>
+            <tr><td><code>y&lt;&gt;""</code></td><td>Y 列不能为空。</td></tr>
+            <tr><td><code>(x=D$5)*(y&lt;&gt;"")</code></td><td>两个条件都成立才保留。</td></tr>
+            <tr><td><code>FILTER(y,...)</code></td><td>筛出符合条件的 Y 值。</td></tr>
+            <tr><td><code>UNIQUE(...)</code></td><td>去重。</td></tr>
+            <tr><td><code>ROWS(...)</code></td><td>统计去重后有多少个。</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section id="scenario8">
+        <h2>场景 8：动态引用工作表并汇总逗号小数金额</h2>
+        <p class="muted">根据 C9 的工作表名，读取该表 N 列金额和 X 列条件，把逗号小数文本转成数字后，筛选并求和。</p>
+
+        <h3>原公式</h3>
+        <div class="formula">=LET(sh,"'"&amp;$C9&amp;"'",n,INDIRECT(sh&amp;"!$N:$N"),x,INDIRECT(sh&amp;"!$X:$X"),IFERROR(SUM(FILTER(ARRAYFORMULA(IFERROR(VALUE(SUBSTITUTE(n,",",".")),0)),x=J$5)),0))</div>
+
+        <h3>先看懂它在做什么</h3>
+        <div class="flow" aria-label="逗号金额汇总流程">
+          <div class="flow-step"><b>1. 动态找表</b><code>INDIRECT</code><p>C9 指定哪张表，就读取哪张表的 N/X 列。</p></div>
+          <div class="flow-step"><b>2. 逗号换点</b><code>SUBSTITUTE(n,",",".")</code><p>把 `12,5` 变成 `12.5`。</p></div>
+          <div class="flow-step"><b>3. 文本转数字</b><code>VALUE</code><p>把看起来像数字的文本变成真数字。</p></div>
+          <div class="flow-step"><b>4. 整列处理</b><code>ARRAYFORMULA</code><p>对 N 列每一行都执行转换。</p></div>
+          <div class="flow-step"><b>5. 按条件筛选</b><code>FILTER(...,x=J$5)</code><p>只保留 X 列等于 J5 的金额。</p></div>
+          <div class="flow-step"><b>6. 求和兜底</b><code>SUM + IFERROR</code><p>加总金额，没结果就返回 0。</p></div>
+        </div>
+
+        <h3>公式分块</h3>
+        <table>
+          <thead>
+            <tr><th>变量/片段</th><th>公式</th><th>作用</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>sh</code></td><td><code>"'"&amp;$C9&amp;"'"</code></td><td>把 C9 的工作表名包成引用格式。</td></tr>
+            <tr><td><code>n</code></td><td><code>INDIRECT(sh&amp;"!$N:$N")</code></td><td>动态引用该工作表 N 列金额。</td></tr>
+            <tr><td><code>x</code></td><td><code>INDIRECT(sh&amp;"!$X:$X")</code></td><td>动态引用该工作表 X 列条件。</td></tr>
+            <tr><td>数字清洗</td><td><code>ARRAYFORMULA(IFERROR(VALUE(SUBSTITUTE(n,",",".")),0))</code></td><td>把 N 列逗号小数文本批量转数字。</td></tr>
+            <tr><td>筛选求和</td><td><code>SUM(FILTER(清洗后的N列,x=J$5))</code></td><td>只汇总 X 等于 J5 的行。</td></tr>
+          </tbody>
+        </table>
+
+        <h3>逗号小数为什么要处理</h3>
+        <table>
+          <thead>
+            <tr><th>原始 N 列</th><th>SUBSTITUTE 后</th><th>VALUE 后</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>12,5</code></td><td><code>12.5</code></td><td>12.5</td></tr>
+            <tr><td><code>0,75</code></td><td><code>0.75</code></td><td>0.75</td></tr>
+            <tr><td><code>abc</code></td><td><code>abc</code></td><td>报错，再由 IFERROR 变 0</td></tr>
+          </tbody>
+        </table>
+
+        <h3>清洗链路</h3>
+        <div class="formula">ARRAYFORMULA(IFERROR(VALUE(SUBSTITUTE(n,",",".")),0))</div>
+        <table>
+          <thead>
+            <tr><th>层级</th><th>作用</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>SUBSTITUTE(n,",",".")</code></td><td>逗号小数改成点小数。</td></tr>
+            <tr><td><code>VALUE(...)</code></td><td>文本数字转成真正数字。</td></tr>
+            <tr><td><code>IFERROR(...,0)</code></td><td>不能转换的内容当作 0。</td></tr>
+            <tr><td><code>ARRAYFORMULA(...)</code></td><td>对整列 N 批量执行。</td></tr>
+          </tbody>
+        </table>
+
+        <h3>筛选求和</h3>
+        <div class="formula">IFERROR(SUM(FILTER(清洗后的N列,x=J$5)),0)</div>
+        <p>这表示：只保留 X 列等于 J5 的金额，然后加总；如果没有符合条件的数据，就返回 0。</p>
+      </section>
+
+      <section id="scenario9">
+        <h2>场景 9：自动生成客户城市分析表</h2>
+        <h3>业务目标</h3>
+        <p class="muted">自动生成当前周的“发货城市＋BI客户＋票数”明细，再针对每一组城市和 BI 客户查找对应的映射客户。第一条公式负责搭建底表，第二条公式负责逐行贴标签。</p>
+
+        <h3>公式一：QUERY 自动生成汇总底表</h3>
+        <div class="formula">=QUERY(
+  FILTER(
+    {
+      TRIM('BI数据源处理 【周维度】'!D4:D60855),
+      TRIM('BI数据源处理 【周维度】'!F4:F60855)
+    },
+    TRIM('BI数据源处理 【周维度】'!A4:A60855)=TRIM($A$2),
+    'BI数据源处理 【周维度】'!D4:D60855&lt;&gt;""
+  ),
+  "select Col1,Col2,count(Col1)
+   group by Col1,Col2
+   label Col1 '',Col2 '',count(Col1) ''",
+  0
+)</div>
+
+        <h3>公式一的制作顺序</h3>
+        <div class="flow" aria-label="QUERY 汇总流程">
+          <div class="flow-step"><b>1. 取两列</b><code>{城市列,BI客户列}</code><p>用大括号把不相邻的 D 列和 F 列拼成临时两列表。</p></div>
+          <div class="flow-step"><b>2. 清洗文本</b><code>TRIM(...)</code><p>去掉城市和客户名称首尾的隐藏空格。</p></div>
+          <div class="flow-step"><b>3. 筛当前周</b><code>FILTER(...,周期=$A$2)</code><p>只留下 W34 等当前周的数据。</p></div>
+          <div class="flow-step"><b>4. 剔除空城市</b><code>城市列&lt;&gt;""</code><p>避免空白城市进入分析表。</p></div>
+          <div class="flow-step"><b>5. 分组计数</b><code>GROUP BY + COUNT</code><p>相同城市、相同 BI 客户合并并统计票数。</p></div>
+          <div class="flow-step"><b>6. 自动溢出</b><code>QUERY</code><p>一个公式生成城市、客户、票数三列结果。</p></div>
+        </div>
+
+        <table>
+          <thead><tr><th>QUERY 片段</th><th>作用</th><th>记忆</th></tr></thead>
+          <tbody>
+            <tr><td><code>select Col1,Col2,count(Col1)</code></td><td>输出城市、BI客户以及数量。</td><td>我要看哪几列。</td></tr>
+            <tr><td><code>group by Col1,Col2</code></td><td>按城市和BI客户的真实组合分组。</td><td>哪几列相同就合并。</td></tr>
+            <tr><td><code>label ... ''</code></td><td>清除 QUERY 自动生成的标题。</td><td>标题由表格上方自己写。</td></tr>
+            <tr><td>最后的 <code>0</code></td><td>告诉 QUERY 输入数据没有标题行。</td><td>FILTER 结果第一行就是数据。</td></tr>
+          </tbody>
+        </table>
+
+        <h3>公式二：MAP 逐行查找映射客户</h3>
+        <div class="formula">=MAP(
+  B33:B,
+  C33:C,
+  LAMBDA(city,client,
+    IF(
+      city="",
+      "",
+      IFNA(
+        TEXTJOIN(
+          " / ",
+          TRUE,
+          UNIQUE(
+            FILTER(
+              '客户名称-客户下单城市 (定期更新）'!C$3:C$1000,
+              LOWER(TRIM('客户名称-客户下单城市 (定期更新）'!D$3:D$1000))=LOWER(TRIM(client)),
+              LOWER(TRIM('客户名称-客户下单城市 (定期更新）'!E$3:E$1000))=LOWER(TRIM(city))
+            )
+          )
+        ),
+        "NA"
+      )
+    )
+  )
+)</div>
+
+        <h3>公式二的制作顺序</h3>
+        <div class="flow" aria-label="MAP 映射流程">
+          <div class="flow-step"><b>1. 输入两列</b><code>MAP(B33:B,C33:C,...)</code><p>同时读取每行城市和 BI 客户。</p></div>
+          <div class="flow-step"><b>2. 给当前行命名</b><code>LAMBDA(city,client,...)</code><p>当前城市叫 city，当前 BI 客户叫 client。</p></div>
+          <div class="flow-step"><b>3. 空行挡住</b><code>IF(city="","",...)</code><p>QUERY 没有结果的空行不继续计算。</p></div>
+          <div class="flow-step"><b>4. 双条件筛选</b><code>FILTER(客户列,BI客户相同,城市相同)</code><p>城市和客户必须在同一映射行同时满足。</p></div>
+          <div class="flow-step"><b>5. 去重并拼接</b><code>UNIQUE + TEXTJOIN</code><p>有多个映射结果时用斜杠全部展示。</p></div>
+          <div class="flow-step"><b>6. 查不到提示</b><code>IFNA(...,"NA")</code><p>没有对应组合时明确标记 NA。</p></div>
+        </div>
+
+        <h3>一句话记忆</h3>
+        <p><strong>QUERY 先把明细压成“城市＋客户＋票数”，MAP 再拿着每组城市和客户，逐行去映射表贴标签。</strong></p>
+
+        <h3>两个公式的上下游关系</h3>
+        <table>
+          <thead><tr><th>公式</th><th>输入</th><th>输出</th><th>角色</th></tr></thead>
+          <tbody>
+            <tr><td><code>QUERY + FILTER</code></td><td>BI逐票明细</td><td>城市、BI客户、票数</td><td>制作分析底表</td></tr>
+            <tr><td><code>MAP + LAMBDA</code></td><td>底表中的城市和BI客户</td><td>映射客户名称</td><td>逐行自动贴标签</td></tr>
+            <tr><td><code>LET + MATCH + SUMPRODUCT</code></td><td>映射关系和BI明细</td><td>主周报客户合计</td><td>下游正式汇总</td></tr>
+          </tbody>
+        </table>
+
+        <h3>为什么不能继续用城市单条件 XLOOKUP</h3>
+        <p>同一个城市可能存在多个 BI 客户。单独按城市查找时，XLOOKUP 只返回遇到的第一个结果；即使结果不是该票真实对应的客户，也不会显示 NA。MAP 公式同时比较 BI 客户和城市，因此保留了真实的配对关系。</p>
+
+        <h3>主周报的下游组合键公式</h3>
+        <p class="muted">下面的 LET 公式不是分析底表公式，而是利用同样的“双字段必须成对”原则计算主周报客户合计。</p>
+
+        <table>
+          <thead><tr><th>判断点</th><th>处理方式</th></tr></thead>
+          <tbody>
+            <tr><td>映射表不断新增客户</td><td>映射范围预留到第 1000 行，避免固定到 192/193 行后漏数。</td></tr>
+            <tr><td>同一城市可能对应多个客户</td><td>不能只按城市 XLOOKUP，必须同时检查 BI 客户。</td></tr>
+            <tr><td>客户和城市必须成对出现</td><td>拼成 <code>客户♦城市</code> 组合键后再 MATCH。</td></tr>
+            <tr><td>大小写或首尾空格不统一</td><td>先用 <code>TRIM</code> 和 <code>LOWER</code> 标准化。</td></tr>
+          </tbody>
+        </table>
+
+        <h3>原公式（票数）</h3>
+        <div class="formula">=LET(
+  k,TRIM($C3),
+  tC,ARRAYFORMULA(TRIM('客户名称-客户下单城市 (定期更新）'!$C$3:$C$1000)),
+  tD,ARRAYFORMULA(TRIM('客户名称-客户下单城市 (定期更新）'!$D$3:$D$1000)),
+  tE,ARRAYFORMULA(TRIM('客户名称-客户下单城市 (定期更新）'!$E$3:$E$1000)),
+  mapKeys,UNIQUE(FILTER(LOWER(tD)&amp;"♦"&amp;LOWER(tE),tC=k,tD&lt;&gt;"",tE&lt;&gt;"")),
+  dataWeek,ARRAYFORMULA(TRIM('BI数据源处理 【周维度】'!$A$3:$A$60855)),
+  dataKey,ARRAYFORMULA(
+    LOWER(TRIM('BI数据源处理 【周维度】'!$F$3:$F$60855))&amp;"♦"&amp;
+    LOWER(TRIM('BI数据源处理 【周维度】'!$D$3:$D$60855))
+  ),
+  IF(k="","",SUMPRODUCT(
+    N(dataWeek=TRIM($A$2)),
+    N(ISNUMBER(MATCH(dataKey,mapKeys,0)))
+  ))
+)</div>
+
+        <h3>下游公式记忆</h3>
+        <p><strong>映射范围要留够，客户城市绑成钥匙；BI 也造同样钥匙，周次和组合两道闸门同时开，才计入一票。</strong></p>
+
+        <h3>公式积木图</h3>
+        <div class="flow" aria-label="组合键匹配流程">
+          <div class="flow-step"><b>1. 确定对象</b><code>k,TRIM($C3)</code><p>确定本行要统计的汇总客户。</p></div>
+          <div class="flow-step"><b>2. 清洗映射</b><code>TRIM + LOWER</code><p>去掉空格并统一大小写。</p></div>
+          <div class="flow-step"><b>3. 绑定组合</b><code>客户&amp;"♦"&amp;城市</code><p>客户与城市不再分开判断。</p></div>
+          <div class="flow-step"><b>4. 筛选去重</b><code>FILTER + UNIQUE</code><p>生成当前客户允许的组合清单。</p></div>
+          <div class="flow-step"><b>5. 精确查找</b><code>MATCH(...,0)</code><p>检查每一票的组合是否存在。</p></div>
+          <div class="flow-step"><b>6. 两闸计数</b><code>SUMPRODUCT</code><p>周次和组合都正确才加 1。</p></div>
+        </div>
+
+        <h3>为什么旧公式会漏掉 72 票</h3>
+        <p>主周报旧公式只读取映射表第 192/193 行以前的数据，而核对表的 <code>XLOOKUP</code> 使用整列。新增映射在后面的行，因此核对表能显示客户、不会出现 NA，主周报却没有读取到这些映射。统一把票数和重量映射范围扩展到第 1000 行后，总票数从 24,835 恢复为 24,907，差异归零。</p>
+
+        <h3>为什么必须使用组合键</h3>
+        <table>
+          <thead><tr><th>映射客户</th><th>BI客户</th><th>城市</th><th>允许组合</th></tr></thead>
+          <tbody>
+            <tr><td>客户A</td><td>渠道X</td><td>Paris</td><td><code>渠道X♦paris</code></td></tr>
+            <tr><td>客户A</td><td>渠道Y</td><td>Lyon</td><td><code>渠道Y♦lyon</code></td></tr>
+            <tr><td>—</td><td>渠道X</td><td>Lyon</td><td>映射表不存在，不能计入</td></tr>
+          </tbody>
+        </table>
+        <p>如果把客户清单和城市清单分开判断，<code>渠道X＋Lyon</code> 会因为两个值分别存在而被误判为匹配；组合键可以保留它们真实的配对关系。</p>
+
+        <h3>票数与重量的区别</h3>
+        <table>
+          <thead><tr><th>指标</th><th>SUMPRODUCT 最后一层</th><th>记忆</th></tr></thead>
+          <tbody>
+            <tr><td>票数</td><td>符合条件的一行计为 1</td><td>数人头。</td></tr>
+            <tr><td>重量</td><td>再乘 <code>weightLU+weightLQ</code></td><td>符合条件后背上重量。</td></tr>
+          </tbody>
+        </table>
+
+        <h3>可复用模板</h3>
+        <div class="formula">=LET(
+  currentGroup, 当前汇总对象,
+  allowedKeys, UNIQUE(FILTER(
+    LOWER(映射条件1)&amp;"♦"&amp;LOWER(映射条件2),
+    映射分组=currentGroup
+  )),
+  sourceKey, LOWER(数据条件1)&amp;"♦"&amp;LOWER(数据条件2),
+  SUMPRODUCT(
+    N(数据周次=当前周次),
+    N(ISNUMBER(MATCH(sourceKey,allowedKeys,0)))
+  )
+)</div>
+        <p class="muted">适用于客户＋城市、客户＋渠道、仓库＋邮编、供应商＋地址等“两个字段共同决定归属”的问题。</p>
+      </section>
+
+      <section id="functions">
+        <h2>基础函数速记</h2>
+        <div class="grid cols-3">
+          <div class="mini-card"><strong>LET</strong><p>给中间结果起名字。最后一个参数是最终要返回的结果。</p><span class="tag">备菜台</span></div>
+          <div class="mini-card"><strong>VALUE</strong><p>把看起来像时间的文本，变成真正可以计算的时间。</p><span class="tag">验钞机</span></div>
+          <div class="mini-card"><strong>INT</strong><p>取日期时间的整数部分，也就是“哪一天”。</p><span class="tag">拿日期</span></div>
+          <div class="mini-card"><strong>MOD</strong><p>用 `MOD(t,1)` 取小数部分，也就是“几点几分”。</p><span class="tag">拿时间</span></div>
+          <div class="mini-card"><strong>WORKDAY.INTL</strong><p>从某天出发，跳过周末和节假日，找工作日。</p><span class="tag">跳日历</span></div>
+          <div class="mini-card"><strong>NETWORKDAYS.INTL</strong><p>数两个日期之间有几个工作日。和 `WORKDAY.INTL` 区分：一个数日子，一个找日子。</p><span class="tag">数工作日</span></div>
+          <div class="mini-card"><strong>XLOOKUP + IFNA</strong><p>查客户规则；查不到时使用默认 11:00。</p><span class="tag">查名单 + 兜底</span></div>
+          <div class="mini-card"><strong>IFNA</strong><p>只处理 <code>#N/A</code>，也就是“查找不到”。在查表类公式里很常用。</p><span class="tag">小安全网</span></div>
+          <div class="mini-card"><strong>IFERROR</strong><p>处理更广泛的公式报错。适合最终展示，但别太早用来遮住问题。</p><span class="tag">大安全网</span></div>
+          <div class="mini-card"><strong>FILTER + UNIQUE</strong><p>先按条件筛出清单，再去重。适合从映射表里生成客户组、地址组。</p><span class="tag">做清单</span></div>
+          <div class="mini-card"><strong>ARRAYFORMULA</strong><p>把单个公式变成整列批量公式。在 Google Sheets 里常用于整列清洗和整列判断。</p><span class="tag">批量套公式</span></div>
+          <div class="mini-card"><strong>MATCH + ISNUMBER</strong><p>判断某个值是否在清单里。找到位置号就是 TRUE，找不到就是 FALSE。</p><span class="tag">查名单</span></div>
+          <div class="mini-card"><strong>SUMPRODUCT</strong><p>把多个 TRUE/FALSE 条件转成 1/0 后相乘，全部满足才计数。</p><span class="tag">三道闸门</span></div>
+          <div class="mini-card"><strong>INDEX + MATCH</strong><p>`MATCH` 找位置，`INDEX` 按位置取值。二维取数时，行号和列号都可以由 `MATCH` 算出来。</p><span class="tag">行列定位</span></div>
+          <div class="mini-card"><strong>COUNTIFS 条件拼接</strong><p><code>"="&amp;C$3</code> 表示“等于当前列表头”。比较符号放引号，单元格用 <code>&amp;</code> 接上。</p><span class="tag">动态条件</span></div>
+          <div class="mini-card"><strong>INDIRECT + SUBSTITUTE</strong><p>`SUBSTITUTE` 先把表名处理安全，`INDIRECT` 再把拼出来的地址文字变成真实引用。</p><span class="tag">动态引用</span></div>
+          <div class="mini-card"><strong>VALUE + SUBSTITUTE</strong><p>先用 `SUBSTITUTE` 把逗号小数改成点小数，再用 `VALUE` 转成可求和的数字。</p><span class="tag">文本转数字</span></div>
+        </div>
+
+        <h3>点击查看函数详情</h3>
+        <p class="muted">点下面的函数标签，可以直接看写法、参数和当前经验库里的实战案例。</p>
+        <div class="function-tabs" aria-label="函数详情切换">
+          <button class="function-tab active" type="button" data-function-target="detail-index-match">INDEX + MATCH</button>
+          <button class="function-tab" type="button" data-function-target="detail-arrayformula">ARRAYFORMULA</button>
+          <button class="function-tab" type="button" data-function-target="detail-match">MATCH</button>
+          <button class="function-tab" type="button" data-function-target="detail-match-isnumber">MATCH + ISNUMBER</button>
+          <button class="function-tab" type="button" data-function-target="detail-indirect-substitute">INDIRECT + SUBSTITUTE</button>
+          <button class="function-tab" type="button" data-function-target="detail-query-filter">QUERY + FILTER</button>
+          <button class="function-tab" type="button" data-function-target="detail-group-by">GROUP BY</button>
+          <button class="function-tab" type="button" data-function-target="detail-map-lambda">MAP + LAMBDA</button>
+        </div>
+
+        <div class="function-detail active" id="detail-index-match">
+          <h3>INDEX + MATCH：先找位置，再取结果</h3>
+          <p><strong>核心记忆：</strong>`MATCH` 只负责告诉你“第几个”，`INDEX` 负责按这个位置把值拿出来。</p>
+          <div class="formula">=INDEX(返回区域, MATCH(查找值, 查找区域, 0))</div>
+          <table>
+            <thead>
+              <tr><th>参数</th><th>意义</th><th>例子</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>返回区域</code></td><td>你最终想拿结果的区域。</td><td>城市缩写列、整张原表。</td></tr>
+              <tr><td><code>查找值</code></td><td>你拿什么去找。</td><td>客户名、地址、日期、指标名。</td></tr>
+              <tr><td><code>查找区域</code></td><td>去哪里找这个值。</td><td>客户列、日期标题行、指标标题行。</td></tr>
+              <tr><td><code>0</code></td><td>精确匹配。</td><td>名称和标题必须对上。</td></tr>
+            </tbody>
+          </table>
+          <h3>二维取数写法</h3>
+          <div class="formula">=INDEX(数据区域, 行号, 列号)</div>
+          <table>
+            <thead>
+              <tr><th>定位对象</th><th>怎么得到</th><th>场景 5 里的用法</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>行号</td><td><code>MATCH(客户名,客户列,0)</code></td><td>用 B2 客户名找原表行。</td></tr>
+              <tr><td>列号</td><td><code>日期起点 + 指标偏移 - 1</code></td><td>用 A2 日期和 D1 指标一起算列。</td></tr>
+            </tbody>
+          </table>
+          <p><strong>案例：</strong>场景 5 里，原表按日期横向分组，目标表按明细展示。公式先找客户行，再找日期块和指标列，最后用 `INDEX` 交叉取数。</p>
+        </div>
+
+        <div class="function-detail" id="detail-arrayformula">
+          <h3>ARRAYFORMULA：把单个公式变成整列批量公式</h3>
+          <p><strong>核心记忆：</strong>普通公式处理一个单元格，`ARRAYFORMULA` 像流水线，一次处理一整列。</p>
+          <div class="formula">=ARRAYFORMULA(要批量执行的公式)</div>
+          <table>
+            <thead>
+              <tr><th>写法</th><th>处理对象</th><th>效果</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>TRIM(C3)</code></td><td>一个单元格</td><td>只清洗 C3。</td></tr>
+              <tr><td><code>ARRAYFORMULA(TRIM(C3:C197))</code></td><td>一整列</td><td>批量清洗 C3:C197。</td></tr>
+            </tbody>
+          </table>
+          <h3>场景 4 案例</h3>
+          <div class="formula">dataClient,ARRAYFORMULA(TRIM('BI数据源处理'!$F$3:$F$50000))</div>
+          <p>这表示：把 BI 数据源 F3:F50000 的客户名称整列去空格，得到一列干净的客户名，后面再拿去做 `MATCH` 判断。</p>
+          <table>
+            <thead>
+              <tr><th>适合什么时候用</th><th>例子</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>整列清洗</td><td><code>ARRAYFORMULA(TRIM(范围))</code></td></tr>
+              <tr><td>整列判断</td><td><code>ARRAYFORMULA(dataWeek=TRIM($A$2))</code></td></tr>
+              <tr><td>整列匹配</td><td><code>ARRAYFORMULA(ISNUMBER(MATCH(dataClient,clientKeys,0)))</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="function-detail" id="detail-match">
+          <h3>MATCH：找位置号</h3>
+          <p><strong>核心记忆：</strong>`MATCH` 不返回内容，只返回“第几个”。</p>
+          <div class="formula">=MATCH(查找值, 查找范围, 0)</div>
+          <table>
+            <thead>
+              <tr><th>角色</th><th>公式例子</th><th>返回什么</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>找客户行</td><td><code>MATCH($B2,客户列,0)</code></td><td>客户在第几行。</td></tr>
+              <tr><td>找日期块</td><td><code>MATCH($A2,日期标题行,0)</code></td><td>日期从第几列开始。</td></tr>
+              <tr><td>找指标位置</td><td><code>MATCH(D$1,日期块标题范围,0)</code></td><td>指标在日期块里第几格。</td></tr>
+              <tr><td>判断是否在清单里</td><td><code>ISNUMBER(MATCH(dataClient,clientKeys,0))</code></td><td>找到为 TRUE，找不到为 FALSE。</td></tr>
+            </tbody>
+          </table>
+          <p><strong>易错点：</strong>`0` 表示精确匹配。做客户名、地址、指标标题匹配时，通常都应该用 `0`。</p>
+        </div>
+
+        <div class="function-detail" id="detail-match-isnumber">
+          <h3>MATCH + ISNUMBER：判断是否在清单里</h3>
+          <p><strong>核心记忆：</strong>`MATCH` 负责查名单，查到会返回位置号；`ISNUMBER` 负责判断这个位置号是不是数字。合起来就是“是否存在于清单中”。</p>
+          <div class="formula">=ISNUMBER(MATCH(要检查的值, 清单范围, 0))</div>
+          <table>
+            <thead>
+              <tr><th>结果</th><th>MATCH 会怎样</th><th>ISNUMBER 后</th><th>含义</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>找到了</td><td>返回 1、2、3 这种位置号</td><td>TRUE</td><td>这个值在清单里。</td></tr>
+              <tr><td>没找到</td><td>返回错误</td><td>FALSE</td><td>这个值不在清单里。</td></tr>
+            </tbody>
+          </table>
+          <h3>场景 4 案例</h3>
+          <div class="formula">clientOk,ARRAYFORMULA(ISNUMBER(MATCH(dataClient,clientKeys,0)))</div>
+          <p>这段的意思是：逐行检查 BI 数据源里的客户名 `dataClient`，是否存在于映射表生成的客户清单 `clientKeys` 里。</p>
+          <table>
+            <thead>
+              <tr><th>BI 客户名</th><th>clientKeys 清单</th><th>MATCH</th><th>ISNUMBER</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>A客户</td><td>A客户、A客户旧名</td><td>1</td><td>TRUE</td></tr>
+              <tr><td>A客户旧名</td><td>A客户、A客户旧名</td><td>2</td><td>TRUE</td></tr>
+              <tr><td>B客户</td><td>A客户、A客户旧名</td><td>找不到</td><td>FALSE</td></tr>
+            </tbody>
+          </table>
+          <h3>什么时候用</h3>
+          <table>
+            <thead>
+              <tr><th>需求</th><th>公式模式</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>判断客户是否属于某个客户组</td><td><code>ISNUMBER(MATCH(客户,客户清单,0))</code></td></tr>
+              <tr><td>判断地址是否属于某个地址清单</td><td><code>ISNUMBER(MATCH(地址,地址清单,0))</code></td></tr>
+              <tr><td>配合 `SUMPRODUCT` 做多条件计数</td><td><code>SUMPRODUCT(N(weekOk),N(clientOk),N(addrOk))</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="function-detail" id="detail-indirect-substitute">
+          <h3>INDIRECT + SUBSTITUTE：动态引用工作表</h3>
+          <p><strong>核心记忆：</strong>`SUBSTITUTE` 负责把工作表名处理安全，`INDIRECT` 负责把文本地址变成真正引用。</p>
+          <div class="formula">=INDIRECT("'"&amp;SUBSTITUTE(表名,"'","''")&amp;"'!$Y:$Y")</div>
+          <table>
+            <thead>
+              <tr><th>函数</th><th>作用</th><th>场景 7 里的角色</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>SUBSTITUTE</code></td><td>替换文本。</td><td>把表名里的 <code>'</code> 替换成 <code>''</code>。</td></tr>
+              <tr><td><code>&amp;</code></td><td>拼接文本。</td><td>拼出 <code>'表名'!$Y:$Y</code>。</td></tr>
+              <tr><td><code>INDIRECT</code></td><td>文本转引用。</td><td>真正读取该工作表的 Y 列或 X 列。</td></tr>
+            </tbody>
+          </table>
+          <h3>单独看 SUBSTITUTE</h3>
+          <div class="formula">=SUBSTITUTE("L'OREAL","'","''")</div>
+          <p>结果是 <code>L''OREAL</code>。这是为了避免工作表名里自带的单引号破坏引用格式。</p>
+          <h3>单独看 INDIRECT</h3>
+          <div class="formula">=INDIRECT("'客户A'!$Y:$Y")</div>
+          <p>这会真正引用 `客户A` 工作表的 Y 列。没有 `INDIRECT` 时，`'客户A'!$Y:$Y` 只是拼出来的一段文字。</p>
+        </div>
+
+        <div class="function-detail" id="detail-query-filter">
+          <h3>QUERY + FILTER：先筛选明细，再生成汇总表</h3>
+          <p><strong>核心记忆：</strong><code>FILTER</code> 负责决定“哪些行可以进来”，<code>QUERY</code> 负责决定“进来以后如何分组、计数和展示”。</p>
+
+          <h3>基础语法</h3>
+          <div class="formula">=QUERY(数据区域, 查询语句, 标题行数)</div>
+          <div class="formula">=FILTER(返回区域, 条件1, 条件2, ...)</div>
+          <div class="formula">=QUERY(
+  FILTER(数据区域,筛选条件),
+  "select ... group by ... label ...",
+  0
+)</div>
+
+          <table>
+            <thead><tr><th>参数</th><th>作用</th><th>当前案例</th></tr></thead>
+            <tbody>
+              <tr><td><code>数据区域</code></td><td>QUERY 要处理的临时表。</td><td><code>{城市列,BI客户列}</code></td></tr>
+              <tr><td><code>查询语句</code></td><td>规定输出列、分组方式、统计方式和标题。</td><td><code>select Col1,Col2,count(Col1)...</code></td></tr>
+              <tr><td><code>标题行数</code></td><td>输入数据顶部有几行标题。</td><td><code>0</code>，因为 FILTER 结果第一行就是数据。</td></tr>
+              <tr><td><code>FILTER 条件</code></td><td>只有所有条件均为 TRUE 的行才保留。</td><td>周次等于 A2，城市不为空。</td></tr>
+            </tbody>
+          </table>
+
+          <h3>场景 9 实战公式</h3>
+          <div class="formula">=QUERY(
+  FILTER(
+    {TRIM('BI数据源处理 【周维度】'!D4:D60855),TRIM('BI数据源处理 【周维度】'!F4:F60855)},
+    TRIM('BI数据源处理 【周维度】'!A4:A60855)=TRIM($A$2),
+    'BI数据源处理 【周维度】'!D4:D60855&lt;&gt;""
+  ),
+  "select Col1,Col2,count(Col1) group by Col1,Col2 label Col1 '',Col2 '',count(Col1) ''",
+  0
+)</div>
+
+          <h3>从里往外读</h3>
+          <table>
+            <thead><tr><th>层级</th><th>作用</th><th>结果</th></tr></thead>
+            <tbody>
+              <tr><td><code>{D列,F列}</code></td><td>把不相邻的城市列和 BI 客户列横向拼接。</td><td>临时两列表。</td></tr>
+              <tr><td><code>TRIM</code></td><td>去除首尾隐藏空格。</td><td>干净的城市和客户名称。</td></tr>
+              <tr><td><code>FILTER</code></td><td>只保留当前周且城市不为空的数据。</td><td>当前周逐票明细。</td></tr>
+              <tr><td><code>QUERY</code></td><td>按城市和 BI 客户分组计数。</td><td>城市＋客户＋票数汇总表。</td></tr>
+            </tbody>
+          </table>
+
+          <h3>常见错误</h3>
+          <table>
+            <thead><tr><th>错误</th><th>原因</th><th>处理</th></tr></thead>
+            <tbody>
+              <tr><td>FILTER 范围大小不同</td><td>返回区域和条件区域行数不一致。</td><td>所有范围统一使用 4:60855。</td></tr>
+              <tr><td>Col1、Col2 写反</td><td>Col 编号由大括号里的排列顺序决定。</td><td><code>{城市,客户}</code> 中城市是 Col1，客户是 Col2。</td></tr>
+              <tr><td>结果多出标题行</td><td>最后参数或 label 设置不正确。</td><td>无标题输入用 <code>0</code>，自定义标题时可用 <code>label</code>。</td></tr>
+              <tr><td>没有结果时报 #N/A</td><td>FILTER 找不到符合条件的行。</td><td>需要时外层增加 <code>IFNA(...,"无数据")</code>。</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="function-detail" id="detail-group-by">
+          <h3>GROUP BY：把相同组合折叠成一行</h3>
+          <p><strong>先澄清：</strong><code>GROUP BY</code> 不是一个独立的 Excel/Google Sheets 函数，而是 <code>QUERY</code> 查询语句中的分组子句。</p>
+          <p><strong>核心记忆：</strong>按照哪些列分组，就把这些列内容相同的记录放进同一个篮子，再对每个篮子计数或求和。</p>
+
+          <h3>基础写法</h3>
+          <div class="formula">=QUERY(数据,"select Col1,count(Col1) group by Col1",0)</div>
+          <div class="formula">=QUERY(数据,"select Col1,Col2,count(Col1) group by Col1,Col2",0)</div>
+
+          <table>
+            <thead><tr><th>写法</th><th>分组颗粒度</th><th>适用场景</th></tr></thead>
+            <tbody>
+              <tr><td><code>group by Col1</code></td><td>只按城市分组。</td><td>查看每个城市总票数。</td></tr>
+              <tr><td><code>group by Col1,Col2</code></td><td>按城市＋BI客户组合分组。</td><td>区分同一城市的不同客户。</td></tr>
+              <tr><td><code>group by Col1,Col2,Col3</code></td><td>按三个字段的组合分组。</td><td>城市＋客户＋渠道等更细颗粒度。</td></tr>
+            </tbody>
+          </table>
+
+          <h3>为什么当前案例必须分组两列</h3>
+          <table>
+            <thead><tr><th>城市</th><th>BI客户</th><th>票数</th></tr></thead>
+            <tbody>
+              <tr><td>LISSES</td><td>CIRRO-Temu-BT-PU</td><td>66</td></tr>
+              <tr><td>LISSES</td><td>GOODCANG-FR</td><td>452</td></tr>
+            </tbody>
+          </table>
+          <p>如果只写 <code>group by Col1</code>，两组 LISSES 会被合并成 518 票，看不出其中有两个 BI 客户；写 <code>group by Col1,Col2</code> 才能保留真实组合。</p>
+
+          <h3>SELECT 与 GROUP BY 的对应规则</h3>
+          <p>在 <code>select</code> 中出现、但没有被 <code>count</code>、<code>sum</code>、<code>avg</code> 等聚合函数处理的列，通常也必须出现在 <code>group by</code> 中。</p>
+          <div class="formula">select Col1,Col2,count(Col1)
+group by Col1,Col2</div>
+          <table>
+            <thead><tr><th>聚合写法</th><th>作用</th></tr></thead>
+            <tbody>
+              <tr><td><code>count(Col1)</code></td><td>统计每个分组有多少行。</td></tr>
+              <tr><td><code>sum(Col3)</code></td><td>汇总每个分组的金额或重量。</td></tr>
+              <tr><td><code>avg(Col3)</code></td><td>计算每个分组的平均值。</td></tr>
+              <tr><td><code>max(Col3)</code></td><td>取得每个分组的最大值。</td></tr>
+            </tbody>
+          </table>
+
+          <h3>一句话记忆</h3>
+          <p><strong>SELECT 决定我要展示什么，GROUP BY 决定哪些记录算同一组，COUNT/SUM 决定每组怎么算。</strong></p>
+        </div>
+
+        <div class="function-detail" id="detail-map-lambda">
+          <h3>MAP + LAMBDA：对多列数据逐行执行同一套逻辑</h3>
+          <p><strong>核心记忆：</strong><code>MAP</code> 负责把每一行送进加工台，<code>LAMBDA</code> 给当前行的数据起名字，并规定每一行怎么计算。</p>
+
+          <h3>基础语法</h3>
+          <div class="formula">=MAP(数组1, LAMBDA(当前值, 对当前值的计算))</div>
+          <div class="formula">=MAP(数组1,数组2,LAMBDA(值1,值2,对两个当前值的计算))</div>
+
+          <table>
+            <thead><tr><th>组成部分</th><th>作用</th><th>当前案例</th></tr></thead>
+            <tbody>
+              <tr><td><code>B33:B</code></td><td>第一个输入数组。</td><td>发货城市列。</td></tr>
+              <tr><td><code>C33:C</code></td><td>第二个输入数组。</td><td>BI客户列。</td></tr>
+              <tr><td><code>LAMBDA(city,client,...)</code></td><td>给当前行的两个值命名。</td><td>当前城市叫 city，当前客户叫 client。</td></tr>
+              <tr><td>LAMBDA 最后部分</td><td>定义每一行返回什么。</td><td>返回映射客户名或 NA。</td></tr>
+            </tbody>
+          </table>
+
+          <h3>场景 9 实战公式</h3>
+          <div class="formula">=MAP(B33:B,C33:C,LAMBDA(city,client,
+  IF(city="","",
+    IFNA(
+      TEXTJOIN(" / ",TRUE,UNIQUE(FILTER(
+        '客户名称-客户下单城市 (定期更新）'!C$3:C$1000,
+        LOWER(TRIM('客户名称-客户下单城市 (定期更新）'!D$3:D$1000))=LOWER(TRIM(client)),
+        LOWER(TRIM('客户名称-客户下单城市 (定期更新）'!E$3:E$1000))=LOWER(TRIM(city))
+      ))),
+      "NA"
+    )
+  )
+))</div>
+
+          <h3>从外到内理解</h3>
+          <table>
+            <thead><tr><th>公式层级</th><th>作用</th><th>记忆</th></tr></thead>
+            <tbody>
+              <tr><td><code>MAP</code></td><td>逐行遍历城市和 BI 客户两列。</td><td>流水线传送带。</td></tr>
+              <tr><td><code>LAMBDA(city,client,...)</code></td><td>定义当前行变量和处理方法。</td><td>给原料起名字、写加工说明。</td></tr>
+              <tr><td><code>IF(city="","",...)</code></td><td>空行不计算。</td><td>没原料就停机。</td></tr>
+              <tr><td><code>FILTER</code></td><td>同时按 BI 客户和城市筛映射表。</td><td>两道条件筛子。</td></tr>
+              <tr><td><code>UNIQUE</code></td><td>清除重复的客户名称。</td><td>同名只保留一次。</td></tr>
+              <tr><td><code>TEXTJOIN(" / ",TRUE,...)</code></td><td>多个有效映射用斜杠拼接。</td><td>多个答案都展示。</td></tr>
+              <tr><td><code>IFNA(...,"NA")</code></td><td>完全找不到时显示 NA。</td><td>缺映射要显性报警。</td></tr>
+            </tbody>
+          </table>
+
+          <h3>MAP 和普通向下填充的区别</h3>
+          <table>
+            <thead><tr><th>方式</th><th>特点</th><th>适合场景</th></tr></thead>
+            <tbody>
+              <tr><td>普通行公式</td><td>每行一个公式，需要向下复制。</td><td>数据行数固定、逻辑简单。</td></tr>
+              <tr><td><code>MAP + LAMBDA</code></td><td>一个公式自动生成整列结果。</td><td>QUERY 结果行数会随周次变化。</td></tr>
+            </tbody>
+          </table>
+
+          <h3>常见错误</h3>
+          <table>
+            <thead><tr><th>错误</th><th>原因</th><th>处理</th></tr></thead>
+            <tbody>
+              <tr><td>LAMBDA 参数数量不一致</td><td>MAP 输入两列，但 LAMBDA 只定义一个名字。</td><td>两列输入必须写两个参数，如 <code>city,client</code>。</td></tr>
+              <tr><td>结果无法展开</td><td>公式下方已有手工内容。</td><td>清空输出区域，让数组公式自动溢出。</td></tr>
+              <tr><td>大小写或空格导致找不到</td><td>源表文本不规范。</td><td>比较两边都使用 <code>LOWER(TRIM(...))</code>。</td></tr>
+              <tr><td>只返回第一个结果</td><td>使用 XLOOKUP 而不是 FILTER。</td><td>用 <code>FILTER + UNIQUE + TEXTJOIN</code> 保留全部有效映射。</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="build">
+        <h2>多场景大公式搭建方法</h2>
+        <p class="muted">这里不再只对应单个公式，而是把目前 9 个实战场景各自抽象成可复用的搭建套路。以后新增场景，也会继续补到这里。</p>
+
+        <h3>通用搭建路线</h3>
+        <div class="builder">
+          <div class="builder-step"><span>1</span><strong>确认输入</strong><p>先看哪些单元格是必填，外层用空值保护挡住无效计算。</p></div>
+          <div class="builder-step"><span>2</span><strong>清洗数据</strong><p>客户名、地址、日期文本先用 `TRIM`、`VALUE`、`INT` 等处理干净。</p></div>
+          <div class="builder-step"><span>3</span><strong>拆成变量</strong><p>公式一复杂就用 `LET`，把中间结果变成可读的积木。</p></div>
+          <div class="builder-step"><span>4</span><strong>组合输出</strong><p>最后用判断、查找、计数或拼接，把结果收束成一个答案。</p></div>
+        </div>
+
+        <h3>场景 1：日期顺延类公式</h3>
+        <p class="muted">适合“某个时间是否赶上截单、是否要跳过周末节假日”的问题。</p>
+        <div class="formula">=IF(输入为空,"",
+LET(
+  t, 完整时间,
+  d, INT(t),
+  h, 节假日表,
+  cutoff, 查到的截单时间或默认值,
+  IF(第一层判断,
+     IF(当天不能处理, 下一个工作日, 当天),
+     下一个工作日
+  )
+))</div>
+        <table>
+          <thead>
+            <tr><th>搭建动作</th><th>常用公式</th><th>记忆</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>日期时间拆两半</td><td><code>INT(t)</code> + <code>MOD(t,1)</code></td><td>INT 拿日期，MOD 拿钟表。</td></tr>
+            <tr><td>查客户规则</td><td><code>XLOOKUP</code> + <code>IFNA</code></td><td>查不到就给默认值。</td></tr>
+            <tr><td>跳过休息日</td><td><code>WORKDAY.INTL</code></td><td>找下一个工作日。</td></tr>
+          </tbody>
+        </table>
+
+        <h3>场景 2：编号拼接类公式</h3>
+        <p class="muted">适合“把前缀、日期、代码、序号拼成一个业务编号”的问题。</p>
+        <div class="formula">=IF(关键字段为空,"",
+  固定前缀
+  & 查到的城市/客户/运输商代码
+  & TEXT(日期,"指定格式")
+  & TEXT(COUNTIFS(累计范围, 当前条件...), "00")
+)</div>
+        <table>
+          <thead>
+            <tr><th>搭建动作</th><th>常用公式</th><th>记忆</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>多个片段粘起来</td><td><code>&</code></td><td>文本胶水。</td></tr>
+            <tr><td>日期变编号片段</td><td><code>TEXT(G2,"ddmmyyyy")</code></td><td>把日期穿上固定格式衣服。</td></tr>
+            <tr><td>同组第几次</td><td><code>COUNTIFS(D$2:$D2,...)</code></td><td>从起点数到当前行。</td></tr>
+            <tr><td>1、2 显示成 01、02</td><td><code>TEXT(数字,"00")</code></td><td>补零显示。</td></tr>
+          </tbody>
+        </table>
+
+        <h3>场景 3：时效剔除类公式</h3>
+        <p class="muted">适合“计算两个时间之间的小时数，但要扣掉周末/节假日”的问题。</p>
+        <div class="formula">=IF(OR(开始="",结束=""),"",
+LET(
+  h, 节假日表,
+  startDate, INT(开始),
+  endDate, INT(结束),
+  startFixed, 如果开始日在非工作日则顺延,
+  endFixed, 如果结束日在非工作日则顺延,
+  raw, (endFixed-startFixed)*24,
+  nonwork, 自然日数量 - NETWORKDAYS.INTL(开始日期,结束日期,周末规则,节假日),
+  MAX(0, raw-nonwork*24)
+))</div>
+        <table>
+          <thead>
+            <tr><th>搭建动作</th><th>常用公式</th><th>记忆</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>计算自然小时差</td><td><code>(结束-开始)*24</code></td><td>Excel 时间差先是“天”，乘 24 变小时。</td></tr>
+            <tr><td>数工作日</td><td><code>NETWORKDAYS.INTL</code></td><td>数日子。</td></tr>
+            <tr><td>算非工作日</td><td><code>自然日 - 工作日</code></td><td>整段日历扣掉工作日。</td></tr>
+            <tr><td>防止负数</td><td><code>MAX(0,结果)</code></td><td>结果最小只能是 0。</td></tr>
+          </tbody>
+        </table>
+
+        <h3>场景 4：清单筛选聚合类公式</h3>
+        <p class="muted">适合“先生成客户/地址清单，再去大数据源里多条件聚合”的问题。</p>
+        <div class="formula">=LET(
+  k, TRIM(当前客户),
+  cleanMap, ARRAYFORMULA(TRIM(映射表范围)),
+  clientKeys, UNIQUE(FILTER(客户列, 主键列=k, 客户列&lt;&gt;"")),
+  addrList, UNIQUE(FILTER(地址列, 主键列=k, 地址列&lt;&gt;"")),
+  weekOk, 数据周次=当前周,
+  clientOk, ISNUMBER(MATCH(数据客户,clientKeys,0)),
+  addrOk, ISNUMBER(MATCH(数据地址,addrList,0)),
+  SUMPRODUCT(N(weekOk),N(clientOk),N(addrOk))
+)</div>
+        <table>
+          <thead>
+            <tr><th>搭建动作</th><th>常用公式</th><th>记忆</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>整列批量清洗</td><td><code>ARRAYFORMULA(TRIM(范围))</code></td><td>流水线处理整列。</td></tr>
+            <tr><td>筛出匹配清单</td><td><code>FILTER</code> + <code>UNIQUE</code></td><td>先筛选，再去重。</td></tr>
+            <tr><td>判断是否在清单里</td><td><code>ISNUMBER(MATCH(...))</code></td><td>查到座位号就是 TRUE。</td></tr>
+            <tr><td>多条件聚合</td><td><code>SUMPRODUCT(N(...),N(...))</code></td><td>三道闸门都开才计数。</td></tr>
+          </tbody>
+        </table>
+
+        <h3>场景 5：二维定位取数类公式</h3>
+        <p class="muted">适合“原表是横向日期块，目标表要按日期、客户、指标重新呈现”的问题。</p>
+        <div class="formula">=IFERROR(
+  INDEX(原表数据区域,
+    MATCH(客户名,原表客户列,0),
+    MATCH(指标名,当前日期块标题范围,0)
+      + MATCH(日期,原表日期标题行,0)
+      - 1
+  ),
+  ""
+)</div>
+        <table>
+          <thead>
+            <tr><th>搭建动作</th><th>常用公式</th><th>记忆</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>找客户行</td><td><code>MATCH(客户名,客户列,0)</code></td><td>客户决定第几行。</td></tr>
+            <tr><td>找日期块起点</td><td><code>MATCH(日期,日期标题行,0)</code></td><td>日期决定从哪一列开始。</td></tr>
+            <tr><td>圈住日期块标题</td><td><code>INDEX(...起始列):INDEX(...结束列)</code></td><td>先框住当天的指标小区。</td></tr>
+            <tr><td>找指标偏移</td><td><code>MATCH(指标名,日期块标题范围,0)</code></td><td>指标决定块内第几格。</td></tr>
+            <tr><td>交叉取值</td><td><code>INDEX(数据区域,行号,列号)</code></td><td>行列交叉就是答案。</td></tr>
+          </tbody>
+        </table>
+
+        <h3>场景 6：条件拼接计数类公式</h3>
+        <p class="muted">适合“按行标题和列表头交叉统计数量”的问题，比如客户 × 时效梯队。</p>
+        <div class="formula">=COUNTIFS(
+  客户列, 当前行客户,
+  梯队列, "="&amp;当前列表头
+)</div>
+        <table>
+          <thead>
+            <tr><th>搭建动作</th><th>常用公式</th><th>记忆</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>多条件计数</td><td><code>COUNTIFS(范围1,条件1,范围2,条件2)</code></td><td>多条件筛子。</td></tr>
+            <tr><td>动态等于表头</td><td><code>"="&amp;C$3</code></td><td>比较符号放引号，单元格用 &amp; 接上。</td></tr>
+            <tr><td>横向拖动固定客户列</td><td><code>$A4</code></td><td>列锁住，行可变。</td></tr>
+            <tr><td>纵向拖动固定表头行</td><td><code>C$3</code></td><td>行锁住，列可变。</td></tr>
+          </tbody>
+        </table>
+
+        <h3>场景 7：动态引用工作表类公式</h3>
+        <p class="muted">适合“工作表名称在单元格里，需要根据表名动态读取不同工作表数据”的问题。</p>
+        <div class="formula">=LET(
+  sh, "'"&amp;SUBSTITUTE(表名,"'","''")&amp;"'",
+  y, INDIRECT(sh&amp;"!$Y:$Y"),
+  x, INDIRECT(sh&amp;"!$X:$X"),
+  IFERROR(ROWS(UNIQUE(FILTER(y,(x=条件)*(y&lt;&gt;"")))),0)
+)</div>
+        <table>
+          <thead>
+            <tr><th>搭建动作</th><th>常用公式</th><th>记忆</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>处理表名里的单引号</td><td><code>SUBSTITUTE(表名,"'","''")</code></td><td>把表名写安全。</td></tr>
+            <tr><td>拼出工作表引用文本</td><td><code>"'"&amp;安全表名&amp;"'!$Y:$Y"</code></td><td>写成完整地址。</td></tr>
+            <tr><td>文本地址变真实引用</td><td><code>INDIRECT(地址文本)</code></td><td>真的走到这个地址。</td></tr>
+            <tr><td>筛选后去重计数</td><td><code>ROWS(UNIQUE(FILTER(...)))</code></td><td>先筛，再去重，再计数。</td></tr>
+          </tbody>
+        </table>
+
+        <h3>场景 8：逗号小数金额汇总类公式</h3>
+        <p class="muted">适合“金额列是文本或逗号小数，需要先清洗再按条件求和”的问题。</p>
+        <div class="formula">=LET(
+  n, 动态金额列,
+  x, 动态条件列,
+  cleanAmount, ARRAYFORMULA(IFERROR(VALUE(SUBSTITUTE(n,",",".")),0)),
+  IFERROR(SUM(FILTER(cleanAmount,x=条件)),0)
+)</div>
+        <table>
+          <thead>
+            <tr><th>搭建动作</th><th>常用公式</th><th>记忆</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>逗号小数改点小数</td><td><code>SUBSTITUTE(金额列,",",".")</code></td><td>先统一小数格式。</td></tr>
+            <tr><td>文本数字转数字</td><td><code>VALUE(文本数字)</code></td><td>让它能参与求和。</td></tr>
+            <tr><td>脏数据当 0</td><td><code>IFERROR(VALUE(...),0)</code></td><td>别让坏值拖垮整列。</td></tr>
+            <tr><td>整列批量转换</td><td><code>ARRAYFORMULA(...)</code></td><td>流水线处理整列。</td></tr>
+            <tr><td>筛选后求和</td><td><code>SUM(FILTER(金额列,条件列=条件))</code></td><td>先筛，再加。</td></tr>
+          </tbody>
+        </table>
+
+        <h3>场景 9：动态分析表与组合匹配公式</h3>
+        <p class="muted">适合“先把明细按两个维度汇总，再逐行查找映射标签”的问题。</p>
+        <div class="formula">=QUERY(
+  FILTER({城市列,BI客户列},周期列=当前周,城市列&lt;&gt;""),
+  "select Col1,Col2,count(Col1) group by Col1,Col2",
+  0
+)</div>
+        <div class="formula">=MAP(城市结果列,BI客户结果列,LAMBDA(city,client,
+  IF(city="","",IFNA(TEXTJOIN(" / ",TRUE,UNIQUE(
+    FILTER(映射客户列,映射BI客户列=client,映射城市列=city)
+  )),"NA"))
+))</div>
+        <p class="muted">如果这些结果还要进入主周报正式汇总，再把客户和城市拼成组合键：</p>
+        <div class="formula">=LET(
+  allowedKeys, UNIQUE(FILTER(LOWER(映射字段1)&amp;"♦"&amp;LOWER(映射字段2),映射分组=当前对象)),
+  sourceKey, LOWER(数据字段1)&amp;"♦"&amp;LOWER(数据字段2),
+  SUMPRODUCT(N(数据周次=当前周),N(ISNUMBER(MATCH(sourceKey,allowedKeys,0))))
+)</div>
+        <table>
+          <thead><tr><th>搭建动作</th><th>常用公式</th><th>记忆</th></tr></thead>
+          <tbody>
+            <tr><td>生成双维度汇总</td><td><code>QUERY + GROUP BY</code></td><td>先把逐票明细压成分析底表。</td></tr>
+            <tr><td>对两列逐行计算</td><td><code>MAP + LAMBDA</code></td><td>给每一行城市和客户贴标签。</td></tr>
+            <tr><td>清除首尾空格</td><td><code>TRIM(范围)</code></td><td>先削边。</td></tr>
+            <tr><td>统一大小写</td><td><code>LOWER(范围)</code></td><td>穿同一套制服。</td></tr>
+            <tr><td>绑定两个条件</td><td><code>字段1&amp;"♦"&amp;字段2</code></td><td>两把半钥匙拼成一把完整钥匙。</td></tr>
+            <tr><td>判断组合存在</td><td><code>ISNUMBER(MATCH(sourceKey,allowedKeys,0))</code></td><td>找到座位号就是匹配。</td></tr>
+            <tr><td>多条件聚合</td><td><code>SUMPRODUCT</code></td><td>所有闸门都开才放行。</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section id="quiz">
+        <h2>主动遮挡自测</h2>
+        <p class="muted">先在心里回答，再点“看答案”。这个区域是用来训练主动回忆的。</p>
+        <div class="quiz">
+          <div class="quiz-item"><strong>大公式太长，我想给中间结果起名字</strong><button class="btn" type="button">看答案</button><div class="answer">LET</div></div>
+          <div class="quiz-item"><strong>单元格像时间但可能是文本</strong><button class="btn" type="button">看答案</button><div class="answer">VALUE(AH7)</div></div>
+          <div class="quiz-item"><strong>我要日期，不要几点几分</strong><button class="btn" type="button">看答案</button><div class="answer">INT(t)</div></div>
+          <div class="quiz-item"><strong>我要几点几分，不要日期</strong><button class="btn" type="button">看答案</button><div class="answer">MOD(t,1)</div></div>
+          <div class="quiz-item"><strong>我要判断是不是周六周日</strong><button class="btn" type="button">看答案</button><div class="answer">WEEKDAY(d,2)&gt;5</div></div>
+          <div class="quiz-item"><strong>我要判断是不是节假日</strong><button class="btn" type="button">看答案</button><div class="answer">COUNTIF(h,d)&gt;0</div></div>
+          <div class="quiz-item"><strong>我要找下一个法国工作日</strong><button class="btn" type="button">看答案</button><div class="answer">WORKDAY.INTL(d,1,"0000011",h)</div></div>
+          <div class="quiz-item"><strong>我要数两个日期之间有几个工作日</strong><button class="btn" type="button">看答案</button><div class="answer">NETWORKDAYS.INTL(开始日期,结束日期,"0000011",节假日)</div></div>
+          <div class="quiz-item"><strong>查不到客户截单时间时用默认 11 点</strong><button class="btn" type="button">看答案</button><div class="answer">IFNA(XLOOKUP(...),TIME(11,0,0))</div></div>
+          <div class="quiz-item"><strong>只想处理查找不到的 #N/A</strong><button class="btn" type="button">看答案</button><div class="answer">IFNA(公式,备用值)</div></div>
+          <div class="quiz-item"><strong>想处理各种类型的公式报错</strong><button class="btn" type="button">看答案</button><div class="answer">IFERROR(公式,备用值)</div></div>
+          <div class="quiz-item"><strong>我要数同供应商、同日期、同地址出现了第几次</strong><button class="btn" type="button">看答案</button><div class="answer">COUNTIFS(D$2:$D2,D2,G$2:$G2,G2,I$2:$I2,I2)</div></div>
+          <div class="quiz-item"><strong>我要把 2 显示成 02</strong><button class="btn" type="button">看答案</button><div class="answer">TEXT(2,"00")</div></div>
+          <div class="quiz-item"><strong>我要把日期显示成 25062026 这种编号片段</strong><button class="btn" type="button">看答案</button><div class="answer">TEXT(G2,"ddmmyyyy")</div></div>
+          <div class="quiz-item"><strong>我要计算非工作日天数</strong><button class="btn" type="button">看答案</button><div class="answer">自然日数量 - NETWORKDAYS.INTL(...)</div></div>
+          <div class="quiz-item"><strong>我要按条件筛出一个清单</strong><button class="btn" type="button">看答案</button><div class="answer">FILTER(返回列,条件列=条件)</div></div>
+          <div class="quiz-item"><strong>我要给清单去重</strong><button class="btn" type="button">看答案</button><div class="answer">UNIQUE(清单)</div></div>
+          <div class="quiz-item"><strong>我要让 TRIM 一次清洗整列</strong><button class="btn" type="button">看答案</button><div class="answer">ARRAYFORMULA(TRIM(范围))</div></div>
+          <div class="quiz-item"><strong>我要判断 BI 客户名是否在客户清单里</strong><button class="btn" type="button">看答案</button><div class="answer">ISNUMBER(MATCH(dataClient,clientKeys,0))</div></div>
+          <div class="quiz-item"><strong>我要三个条件都满足才计数</strong><button class="btn" type="button">看答案</button><div class="answer">SUMPRODUCT(N(条件1),N(条件2),N(条件3))</div></div>
+          <div class="quiz-item"><strong>我要按客户名找到原表行号</strong><button class="btn" type="button">看答案</button><div class="answer">MATCH($B2,原表客户列,0)</div></div>
+          <div class="quiz-item"><strong>我要按日期找到横向日期块起始列</strong><button class="btn" type="button">看答案</button><div class="answer">MATCH($A2,原表日期标题行,0)</div></div>
+          <div class="quiz-item"><strong>我要用行号和列号交叉取数</strong><button class="btn" type="button">看答案</button><div class="answer">INDEX(数据区域,行号,列号)</div></div>
+          <div class="quiz-item"><strong>为什么列号要加指标偏移再减 1</strong><button class="btn" type="button">看答案</button><div class="answer">因为日期起始列已经是第 1 个指标，所以真实列号 = 日期起点 + 块内位置 - 1</div></div>
+          <div class="quiz-item"><strong>我要让 COUNTIFS 的条件等于当前列表头</strong><button class="btn" type="button">看答案</button><div class="answer">"="&amp;C$3</div></div>
+          <div class="quiz-item"><strong>我要拼接“大于某个单元格”的条件</strong><button class="btn" type="button">看答案</button><div class="answer">"&gt;"&amp;单元格</div></div>
+          <div class="quiz-item"><strong>我要把表名里的单引号处理安全</strong><button class="btn" type="button">看答案</button><div class="answer">SUBSTITUTE(表名,"'","''")</div></div>
+          <div class="quiz-item"><strong>我要把文本地址变成真实引用</strong><button class="btn" type="button">看答案</button><div class="answer">INDIRECT(地址文本)</div></div>
+          <div class="quiz-item"><strong>我要动态引用 C9 指定工作表的 Y 列</strong><button class="btn" type="button">看答案</button><div class="answer">INDIRECT("'"&amp;SUBSTITUTE($C9,"'","''")&amp;"'!$Y:$Y")</div></div>
+          <div class="quiz-item"><strong>我要把 12,5 改成 12.5</strong><button class="btn" type="button">看答案</button><div class="answer">SUBSTITUTE(金额,",",".")</div></div>
+          <div class="quiz-item"><strong>我要把文本数字转成真正数字</strong><button class="btn" type="button">看答案</button><div class="answer">VALUE(文本数字)</div></div>
+          <div class="quiz-item"><strong>我要整列金额先清洗再转数字，错误当 0</strong><button class="btn" type="button">看答案</button><div class="answer">ARRAYFORMULA(IFERROR(VALUE(SUBSTITUTE(金额列,",",".")),0))</div></div>
+          <div class="quiz-item"><strong>我要筛选条件列后汇总金额</strong><button class="btn" type="button">看答案</button><div class="answer">SUM(FILTER(金额列,条件列=条件))</div></div>
+          <div class="quiz-item"><strong>客户和城市必须作为一组匹配，不能分开判断</strong><button class="btn" type="button">看答案</button><div class="answer">LOWER(TRIM(客户))&amp;"♦"&amp;LOWER(TRIM(城市))</div></div>
+          <div class="quiz-item"><strong>我要判断 BI 的组合键是否存在于映射组合清单</strong><button class="btn" type="button">看答案</button><div class="answer">ISNUMBER(MATCH(sourceKey,allowedKeys,0))</div></div>
+          <div class="quiz-item"><strong>我要把逐票明细按城市和 BI 客户分组计数</strong><button class="btn" type="button">看答案</button><div class="answer">QUERY(...,"select Col1,Col2,count(Col1) group by Col1,Col2",0)</div></div>
+          <div class="quiz-item"><strong>我要同时读取城市列和 BI 客户列，并对每一行执行同一套查找</strong><button class="btn" type="button">看答案</button><div class="answer">MAP(城市列,BI客户列,LAMBDA(city,client,...))</div></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    document.querySelectorAll(".quiz-item .btn").forEach((button) => {
+      button.addEventListener("click", () => {
+        const item = button.closest(".quiz-item");
+        item.classList.toggle("open");
+        button.textContent = item.classList.contains("open") ? "收起答案" : "看答案";
+      });
+    });
+
+    document.querySelectorAll(".function-tab").forEach((button) => {
+      button.addEventListener("click", () => {
+        const targetId = button.dataset.functionTarget;
+        document.querySelectorAll(".function-tab").forEach((tab) => {
+          tab.classList.toggle("active", tab === button);
+        });
+        document.querySelectorAll(".function-detail").forEach((detail) => {
+          detail.classList.toggle("active", detail.id === targetId);
+        });
+      });
+    });
+  </script>
+</body>
+</html>
